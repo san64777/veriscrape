@@ -5,7 +5,7 @@ description = "fetch, but it tells you the truth: a verified-fetch primitive tha
 readme = "README.md"
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
-authors = [{ name = "Sanjay" }]
+authors = [{ name = "Sanjay Chauhan", email = "san64777@gmail.com" }]
 keywords = [
     "web-scraping", "scraping", "scraper", "anti-bot", "bot-detection",
     "reliability", "data-integrity", "cloudflare", "datadome", "honeypot",
@@ -25,6 +25,11 @@ dependencies = [
     "selectolax>=0.3",
 ]
 
+[project.urls]
+Homepage = "https://github.com/san64777/veriscrape"
+Repository = "https://github.com/san64777/veriscrape"
+Issues = "https://github.com/san64777/veriscrape/issues"
+
 [project.scripts]
 veriscrape = "veriscrape.cli:main"
 
@@ -33,7 +38,7 @@ veriscrape = "veriscrape.cli:main"
 benchmark = ["requests>=2.31", "scrapling>=0.4", "playwright>=1.40", "browserforge>=1.2"]
 
 [dependency-groups]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11", "pip-licenses>=5"]
 
 [build-system]
 requires = ["hatchling"]
@@ -45,3 +50,10 @@ packages = ["src/veriscrape"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.ruff]
+line-length = 110
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true

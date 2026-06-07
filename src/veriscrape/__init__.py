@@ -40,10 +40,11 @@ def get(
     from curl_cffi import requests as cffi
 
     start = time.perf_counter()
-    resp = cffi.get(url, impersonate=impersonate, timeout=timeout, **kwargs)
+    # impersonate is a free-form profile string at runtime; curl_cffi's stub narrows it to a Literal.
+    resp = cffi.get(url, impersonate=impersonate, timeout=timeout, **kwargs)  # type: ignore[arg-type]
     elapsed_ms = (time.perf_counter() - start) * 1000.0
 
-    headers = dict(resp.headers)
+    headers = {k: v for k, v in dict(resp.headers).items() if v is not None}
     body = resp.text
     verdict, cause, confidence, evidence = classify(
         status=resp.status_code, headers=headers, body=body
