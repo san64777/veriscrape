@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Virtualenv (uv manages .venv; uv.lock IS committed for reproducibility)
+.venv/
+venv/
+.env
+
+# Benchmark raw captures: unscrubbed page content.
+# Curate scrubbed examples into tests/fixtures/ before committing.
+benchmark/captures/*
+!benchmark/captures/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Kept LOCAL only: strategy, internal process, project rules (never committed)
+research/
+.claude/
+CLAUDE.md
+docs/

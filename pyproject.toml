@@ -1,0 +1,47 @@
+[project]
+name = "veriscrape"
+version = "0.0.1"
+description = "fetch, but it tells you the truth: a verified-fetch primitive that returns a portable trust verdict, not just bytes."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "Sanjay" }]
+keywords = [
+    "web-scraping", "scraping", "scraper", "anti-bot", "bot-detection",
+    "reliability", "data-integrity", "cloudflare", "datadome", "honeypot",
+    "verified-fetch", "data-quality",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "curl_cffi>=0.7",
+    "pydantic>=2",
+    "selectolax>=0.3",
+]
+
+[project.scripts]
+veriscrape = "veriscrape.cli:main"
+
+[project.optional-dependencies]
+# Comparison tools for the benchmark only, never needed by the library itself.
+benchmark = ["requests>=2.31", "scrapling>=0.4", "playwright>=1.40", "browserforge>=1.2"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/veriscrape"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
