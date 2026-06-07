@@ -1,0 +1,13 @@
+name: license-gate
+on: [push, pull_request]
+jobs:
+  licenses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv python install 3.12
+      # Sync only the runtime + dev tree (NOT the benchmark extra, which ships to no library user),
+      # so the gate verifies the real install is zero-copyleft. Fails on any GPL/AGPL/LGPL/SSPL dep.
+      - run: uv sync
+      - run: uv run pip-licenses --fail-on='GPL;AGPL;LGPL;SSPL' --partial-match
