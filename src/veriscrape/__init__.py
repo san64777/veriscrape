@@ -18,7 +18,7 @@ from .classify import classify
 from .record import FetchRecord, Verdict
 
 __all__ = ["get", "FetchRecord", "Verdict", "classify", "__version__"]
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 _DEFAULT_IMPERSONATE = "chrome"
 
