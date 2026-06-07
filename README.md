@@ -1,5 +1,10 @@
 # veriscrape
 
+[![CI](https://github.com/san64777/veriscrape/actions/workflows/ci.yml/badge.svg)](https://github.com/san64777/veriscrape/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/veriscrape.svg)](https://pypi.org/project/veriscrape/)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/san64777/veriscrape/blob/main/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
+
 **fetch, but it tells you the truth.** A verified-fetch primitive for web scraping: every fetch
 returns the bytes **plus** a portable trust verdict, so you know the moment your data is silently
 wrong, not three days later through a broken downstream report.
