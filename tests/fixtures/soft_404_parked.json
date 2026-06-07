@@ -1,0 +1,12 @@
+{
+  "url": "https://oldstartup.example/",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!DOCTYPE html><html><head><title>oldstartup.example</title></head><body><div class=\"parking\"><h1>This domain is for sale</h1><h2>oldstartup.example</h2><p>Buy this domain today and make it yours. Interested in this domain? Inquire for pricing.</p></div></body></html>",
+  "true_verdict": "SOFT_404",
+  "note": "A parked / for-sale domain placeholder served as HTTP 200, no real content. The parking stub LEADS with the for-sale message (h1 'This domain is for sale'), unlike a real domain-marketplace listing whose h1 is the domain name and for-sale copy is in body."
+}

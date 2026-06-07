@@ -1,0 +1,14 @@
+{
+  "url": "https://example-blog.com/reverse-engineering-the-cf-challenge",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Server": "cloudflare",
+    "cf-ray": "9aaa1111bbbb2222-LHR",
+    "Content-Type": "text/html; charset=UTF-8"
+  },
+  "body": "<!DOCTYPE html><html><head><title>Reverse-engineering the Cloudflare challenge</title></head><body><article><h1>How the CF challenge works</h1><p>Cloudflare injects a script that sets <code>window._cf_chl_opt</code> with fields like cvId and cRay. Detectors should look for this object to recognize a challenge page.</p></article></body></html>",
+  "true_verdict": "OK",
+  "note": "A normal allowed article that merely QUOTES the literal token window._cf_chl_opt in prose, served behind Cloudflare. The detector must NOT flag it: there is no challenge assignment and status is 200. FALSE POSITIVE found by adversarial review (fp-specialist, HIGH)."
+}

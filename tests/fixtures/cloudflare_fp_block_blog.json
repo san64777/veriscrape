@@ -1,0 +1,14 @@
+{
+  "url": "https://example-blog.com/what-cloudflare-1020-means",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Server": "cloudflare",
+    "cf-ray": "9ddd4444eeee5555-LHR",
+    "Content-Type": "text/html; charset=UTF-8"
+  },
+  "body": "<!DOCTYPE html><html><head><title>What does \"Sorry, you have been blocked\" mean?</title></head><body><article><h1>Cloudflare error 1020 explained</h1><p>When Cloudflare blocks you, it returns a page titled <code>Attention Required! | Cloudflare</code> containing <code>cf-error-details</code> and the text \"Sorry, you have been blocked\". Look for the <code>Cloudflare Ray ID</code> to report it.</p></article></body></html>",
+  "true_verdict": "OK",
+  "note": "A normal allowed 200 article that explains/quotes the Cloudflare block-page markers, served behind Cloudflare. The block detector must NOT flag it: the non-2xx status gate is what saves it. FP guard."
+}

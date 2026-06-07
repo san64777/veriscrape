@@ -1,0 +1,13 @@
+{
+  "url": "https://protected.example/account",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 403,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Set-Cookie": "_pxhd=abc123:def456; Path=/; Domain=.protected.example; Secure, _pxvid=11111111-2222-3333-4444-555555555555; Path=/"
+  },
+  "body": "<!DOCTYPE html><html><head><title>Access to this page has been denied</title></head><body><div id=\"px-captcha\"></div><h1>Please verify you are a human</h1><p>Press &amp; Hold to confirm you are a human (and not a bot).</p><script>window._pxAppId='PXabc1defg';window._pxJsClientSrc='//client.perimeterx.net/PXabc1defg/main.min.js';window._pxHostUrl='//collector-PXabc1defg.perimeterx.net';</script><script src=\"https://captcha.px-cdn.net/PXabc1defg/captcha.js?a=c&amp;m=0\"></script></body></html>",
+  "true_verdict": "CHALLENGE",
+  "note": "Faithful PerimeterX/HUMAN 'Press & Hold' interstitial (HTTP 403). Vendor gate: _px* cookies. Challenge-specific markers: 'Press & Hold' / 'Please verify you are a human' / the px-captcha element / captcha.px-cdn.net. NOTE the sensor JS (_pxAppId, client.perimeterx.net) loads on ALLOWED pages too, so it is NOT a challenge marker. Sources: scrapfly.io anti-bot references."
+}

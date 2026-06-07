@@ -1,0 +1,13 @@
+{
+  "url": "https://protected.example/product/55",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Set-Cookie": "_pxvid=99999999-8888-7777-6666-555555555555; Path=/; Domain=.protected.example"
+  },
+  "body": "<!DOCTYPE html><html><head><title>Green Gadget</title></head><body><main><h1>Green Gadget</h1><p>The Green Gadget is in stock with free shipping and a two-year warranty. Over 900 reviews.</p></main><script>window._pxAppId='PXabc1defg';</script><script src=\"https://client.perimeterx.net/PXabc1defg/main.min.js\"></script></body></html>",
+  "true_verdict": "OK",
+  "note": "Allowed PerimeterX-protected page (HTTP 200). Carries the _pxvid cookie AND the PerimeterX sensor JS (_pxAppId, client.perimeterx.net), both present on allowed pages, but NO 'Press & Hold' / px-captcha challenge markers. The two-key rule must NOT flag it."
+}

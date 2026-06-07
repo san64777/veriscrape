@@ -1,0 +1,12 @@
+{
+  "url": "https://shop.example/products/discontinued-item-xyz",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Page Not Found</title></head><body><header><a href=\"/\">Shop</a></header><nav><a href=\"/\">Home</a> <a href=\"/products\">Products</a> <a href=\"/categories\">Categories</a> <a href=\"/deals\">Deals</a> <a href=\"/account\">Account</a> <a href=\"/cart\">Cart</a> <a href=\"/help\">Help</a> <a href=\"/about\">About us</a> <a href=\"/careers\">Careers</a> <a href=\"/contact\">Contact</a></nav><main><h1>Page not found</h1><p>Sorry, the page you requested could not be found. It may have been moved, renamed, or removed.</p><a href=\"/\">Return to the homepage</a></main><footer>&copy; 2026 Example Shop Inc. All rights reserved. Terms. Privacy. Cookies.</footer></body></html>",
+  "true_verdict": "SOFT_404",
+  "note": "A 'Page Not Found' placeholder served as HTTP 200 (the soft-404 anti-pattern) with full site nav/header/footer chrome. After stripping chrome, the MAIN content is short and carries 'page not found' / 'the page you requested could not be found'. A well-built site returns a hard 404 instead (verified: python.org/BBC do)."
+}

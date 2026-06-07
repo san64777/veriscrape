@@ -1,0 +1,14 @@
+{
+  "url": "https://protected.example/license/12345",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "X-CDN": "Incapsula",
+    "Set-Cookie": "visid_incap_1234567=AbCdEf1234567890==; path=/; Domain=.protected.example"
+  },
+  "body": "<!DOCTYPE html><html><head><title>License Lookup</title></head><body><main><h1>License #12345</h1><p>Status: Active. Issued 2021-03-01, expires 2027-03-01. Holder in good standing.</p></main></body></html>",
+  "true_verdict": "OK",
+  "note": "Allowed Incapsula-protected page (HTTP 200). Carries the visid_incap cookie + X-CDN:Incapsula (vendor present on allowed pages) but NO _Incapsula_Resource / incident-ID mitigation marker. The two-key rule must NOT flag it."
+}

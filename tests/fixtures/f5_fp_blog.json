@@ -1,0 +1,13 @@
+{
+  "url": "https://example-blog.com/f5-asm-request-rejected-explained",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Server": "nginx"
+  },
+  "body": "<!DOCTYPE html><html><head><title>F5 ASM: 'The requested URL was rejected' explained</title></head><body><article><h1>Reading the F5 block page</h1><p>F5 BIG-IP ASM returns <code>The requested URL was rejected. Please consult with your administrator.</code> with a <code>Your support ID is</code> line. Here is what it means.</p></article></body></html>",
+  "true_verdict": "OK",
+  "note": "A blog that QUOTES the F5 ASM block template in prose, served as HTTP 200 by nginx. The non-2xx status gate must reject it (the real block is a 403). FP guard."
+}

@@ -1,0 +1,12 @@
+{
+  "url": "https://app.example/",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Portal</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body><cm-app></cm-app><script src=\"polyfills-6lavh3ff.js\" type=\"module\"></script><script src=\"main-rl77fq7e.js\" type=\"module\"></script><script src=\"scripts-7ctm7ai7.js\"></script></body></html>",
+  "true_verdict": "EMPTY_SHELL",
+  "note": "A SPA that mounts into a CUSTOM ELEMENT (here <cm-app>, modeled on real <cm-certemy>) instead of a known mount id or <app-root>. Custom elements are hyphenated by spec and standard HTML tags never are, so an empty-husk hyphenated element + scripts + ~0 visible text is a safe JS-app-shell signal."
+}

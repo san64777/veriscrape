@@ -1,0 +1,15 @@
+{
+  "url": "https://protected.example/api/search",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 429,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "x-kpsdk-ct": "06AbCdEfGh1234567890",
+    "x-kpsdk-r": "1",
+    "Set-Cookie": "KP_UIDz=0a1b2c3d4e5f; Path=/"
+  },
+  "body": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body><script src=\"/ips.js?cache=0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d\"></script></body></html>",
+  "true_verdict": "CHALLENGE",
+  "note": "Faithful Kasada interstitial (HTTP 429). Vendor gate: x-kpsdk-* response headers (x-kpsdk-ct/x-kpsdk-r). The body is an obfuscated proof-of-work JS challenge loaded from /ips.js (or a GUID-style /p.js path), no human-readable UI. NOTE a CLEARED Kasada session also carries x-kpsdk-ct on allowed 200s, so the header is the vendor gate; the non-2xx status is the mitigation signal. Sources: scrapfly.io anti-bot references."
+}

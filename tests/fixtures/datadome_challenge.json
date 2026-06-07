@@ -1,0 +1,15 @@
+{
+  "url": "https://protected.example/search",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 403,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Connection": "keep-alive",
+    "x-dd-b": "1",
+    "Set-Cookie": "datadome=AHrlqAAAAAMA9c3b1Qq6kP3AbcDef~; Max-Age=31536000; Domain=.protected.example; Path=/; Secure; SameSite=Lax"
+  },
+  "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>protected.example</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head><body><div id=\"ddv1-captcha-container\"></div><script>var dd={'rt':'c','cid':'AHrlqAAAAAMA9c3b1Qq6kP3','hsh':'2A1E6F...','t':'fe','s':45678,'e':'b6d1f...','host':'geo.captcha-delivery.com','cookie':'datadome'}</script><script src=\"https://ct.captcha-delivery.com/c.js\"></script></body></html>",
+  "true_verdict": "CHALLENGE",
+  "note": "Faithful DataDome CAPTCHA interstitial (HTTP 403). Verified markers: datadome Set-Cookie (vendor), the 'var dd={' object, and the captcha-delivery.com script host (challenge-specific). 2025 note: inner dd keys + the iframe script file rotate daily, so fingerprint on the stable host + 'var dd' object, NOT inner keys. Sources: docs.datadome.co, scrapfly.io anti-bot references."
+}

@@ -1,0 +1,21 @@
+{
+  "url": "https://nowsecure.nl",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 403,
+  "headers": {
+    "Date": "Sun, 07 Jun 2026 11:34:00 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "cf-mitigated": "challenge",
+    "Cache-Control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+    "Cross-Origin-Embedder-Policy": "require-corp",
+    "Set-Cookie": "__cf_bm=abc123def456; path=/; expires=Sun, 07-Jun-26 12:04:00 GMT; domain=.nowsecure.nl; HttpOnly; Secure; SameSite=None",
+    "Server": "cloudflare",
+    "cf-ray": "8f3a1b2c3d4e5f60-AMS"
+  },
+  "body": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link href=\"/cdn-cgi/styles/challenges.css\" rel=\"stylesheet\"></head><body class=\"no-js\"><div class=\"main-wrapper\" role=\"main\"><div class=\"main-content\"><h1 class=\"zone-name-title h1\">nowsecure.nl</h1><h2 class=\"h2\" id=\"challenge-running\">Verifying you are human. This may take a few seconds.</h2><div id=\"challenge-body-text\" class=\"core-msg spacer\">nowsecure.nl needs to review the security of your connection before proceeding.</div><div id=\"challenge-success\" style=\"display:none\"><span class=\"h2\">Verification successful</span></div><div id=\"challenge-error-title\" style=\"display:none\"><div class=\"h2\"><span class=\"icon-wrapper\"></span><span id=\"challenge-error-text\">Enable JavaScript and cookies to continue</span></div></div></div></div><script>(function(){window._cf_chl_opt={cvId:'3',cZone:'nowsecure.nl',cType:'managed',cRay:'8f3a1b2c3d4e5f60',cH:'abc.def.ghi',cUPMDTk:\"/?__cf_chl_tk=token\",cFPWv:'g',cITimeS:'1780000000',cTplV:5,cTplB:'cf'};var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/h/g/orchestrate/chl_page/v1?ray=8f3a1b2c3d4e5f60';document.getElementsByTagName('head')[0].appendChild(s);})();</script></body></html>",
+  "true_verdict": "CHALLENGE",
+  "note": "Constructed from Cloudflare's documented managed-challenge ('Just a moment...') structure. Verified markers: cf-mitigated:challenge header, window._cf_chl_opt body object, /cdn-cgi/challenge-platform script, 403 status (JS challenge moved 503->403 in Mar 2023). Sources: developers.cloudflare.com/cloudflare-challenges, http.dev/cf-mitigated. Replace with a live capture when a site is in challenge mode."
+}

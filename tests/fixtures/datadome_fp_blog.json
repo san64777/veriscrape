@@ -1,0 +1,13 @@
+{
+  "url": "https://example-blog.com/how-datadome-captcha-works",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Server": "nginx"
+  },
+  "body": "<!DOCTYPE html><html><head><title>How the DataDome CAPTCHA works</title></head><body><article><h1>Reading the DataDome challenge</h1><p>The DataDome interstitial embeds a <code>var dd = {...}</code> object and loads its script from <code>captcha-delivery.com</code>. Detectors should look for the datadome cookie alongside these markers.</p></article></body></html>",
+  "true_verdict": "OK",
+  "note": "A blog that QUOTES the DataDome markers (captcha-delivery.com, 'var dd') in prose, but is NOT served by DataDome: no datadome cookie, no x-datadome/x-dd-b header. The vendor gate must reject it. FP guard."
+}

@@ -1,0 +1,13 @@
+{
+  "url": "https://example-blog.com/akamai-access-denied-explained",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 403,
+  "headers": {
+    "Server": "nginx",
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!DOCTYPE html><html><head><title>Akamai \"Access Denied\" explained</title></head><body><article><h1>What an Akamai block looks like</h1><p>Akamai's deny page is an HTTP 403 titled <code>Access Denied</code> served by <code>AkamaiGHost</code>, with a tracking line like <code>Reference #18.dd5d2c17.1718000000.1a2b3c4d</code>.</p></article></body></html>",
+  "true_verdict": "OK",
+  "note": "A blog (its OWN 403 page or article) that QUOTES the Akamai deny markers (including a Reference # in the documented format) but is served by nginx with no AkamaiGHost server and no Akamai cookie. The vendor gate must reject it. FP guard (the marker text + a 403 status both present, only the vendor gate saves it)."
+}

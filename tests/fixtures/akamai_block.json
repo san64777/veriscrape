@@ -1,0 +1,16 @@
+{
+  "url": "https://protected.example/data",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 403,
+  "headers": {
+    "Server": "AkamaiGHost",
+    "Mime-Version": "1.0",
+    "Content-Type": "text/html",
+    "Content-Length": "278",
+    "Expires": "Sun, 07 Jun 2026 11:40:00 GMT"
+  },
+  "body": "<HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</HEAD><BODY>\n<H1>Access Denied</H1>\n \nYou don't have permission to access \"http://protected.example/data\" on this server.<P>\nReference #18.dd5d2c17.1718000000.1a2b3c4d\n</P>\n</BODY>\n</HTML>\n",
+  "true_verdict": "BLOCKED",
+  "note": "Faithful Akamai (AkamaiGHost) WAF deny page (HTTP 403). Verified markers: Server: AkamaiGHost, 'Access Denied', and the 'Reference #<digits>.<hex>.<digits>.<hex>' tracking id (plain text, as commonly served). A hard deny = BLOCKED. Sources: scrapfly.io anti-bot references, Akamai deny-template docs."
+}

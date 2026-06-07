@@ -1,0 +1,12 @@
+{
+  "url": "https://protected.example/article/quantum-widgets",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!DOCTYPE html><html lang=\"en\"><head><title>Quantum Widgets Explained</title><meta name=\"robots\" content=\"noindex,nofollow\"></head><body><article><h1>Quantum Widgets Explained</h1><p>Quantum widgets are a fascinating area of modern engineering, combining principles of superposition with everyday utility. This article walks through the fundamentals in plain language.</p><p>The history is rich and the applications are broad, from logistics to consumer electronics.</p></article><a href=\"/maze/a1b2c3\" rel=\"nofollow\" style=\"display:none\">related</a><a href=\"/maze/d4e5f6\" rel=\"nofollow\" style=\"position:absolute;left:-9999px\">more</a><a href=\"/maze/g7h8i9\" rel=\"nofollow\" aria-hidden=\"true\">see also</a><a href=\"/maze/j0k1l2\" rel=\"nofollow\" style=\"width:1px;height:1px\">further reading</a></body></html>",
+  "true_verdict": "HONEYPOT",
+  "note": "A page (or AI-Labyrinth decoy) that exposes a cluster of INVISIBLE nofollow trap links (display:none / off-screen / aria-hidden / 1px) into a same-host maze. The prose reads like a normal article (deliberately, per the research), so this is caught by the TRAP STRUCTURE, not the content. The full signal (you ARRIVED via an invisible link on the parent) needs get()-level crawl context."
+}

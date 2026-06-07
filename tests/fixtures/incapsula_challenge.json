@@ -1,0 +1,15 @@
+{
+  "url": "https://protected.example/search",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 403,
+  "headers": {
+    "Content-Type": "text/html",
+    "X-Iinfo": "1-23456789-23456790 NNNN CT(0 0 0) RT(1718000000 0) q(0 0 0 0) r(1 1) U5",
+    "X-CDN": "Incapsula",
+    "Set-Cookie": "visid_incap_1234567=AbCdEf1234567890==; expires=...; path=/; Domain=.protected.example, incap_ses_123_1234567=GhIjKl==; path=/"
+  },
+  "body": "<html style=\"height:100%\"><head><meta name=\"ROBOTS\" content=\"NOINDEX, NOFOLLOW\"><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body style=\"margin:0px;height:100%\"><iframe id=\"main-iframe\" src=\"/_Incapsula_Resource?SWUDNSAI=31&xinfo=...&incident_id=0061000130012345678-1234567890123456\" frameborder=0 width=\"100%\" height=\"100%\">Request unsuccessful. Incapsula incident ID: 0061000130012345678-1234567890123456</iframe></body></html>",
+  "true_verdict": "CHALLENGE",
+  "note": "Faithful Imperva/Incapsula interstitial. Vendor gate: visid_incap_/incap_ses_ cookies, X-Iinfo / X-CDN:Incapsula headers (all present on allowed pages too). Mitigation markers (challenge-specific): '_Incapsula_Resource' and 'Incapsula incident ID'. Served to a JS-less client as a 403 iframe. Sources: scrapfly.io anti-bot references."
+}

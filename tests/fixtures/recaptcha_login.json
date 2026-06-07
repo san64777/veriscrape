@@ -1,0 +1,12 @@
+{
+  "url": "https://portal.example/account/login",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!doctype html><html><head><title>Sign in — Example Portal</title><script src=\"https://www.google.com/recaptcha/api.js\" async defer></script></head><body><header><nav><a href=\"/\">Home</a><a href=\"/about\">About</a><a href=\"/help\">Help Center</a><a href=\"/contact\">Contact Us</a></nav></header><main><h1>Sign in to your account</h1><p>Access your license applications, renewals, and verification history. New here? Create an account to get started with your professional licensing.</p><form action=\"/session\" method=\"post\"><label>Email address</label><input type=\"email\" name=\"email\"><label>Password</label><input type=\"password\" name=\"password\"><a href=\"/forgot\">Forgot your password?</a><div class=\"g-recaptcha\" data-sitekey=\"6LdYYYYYYYYYYYYYYYYYYYYY\"></div><button type=\"submit\">Sign in</button></form><p>By signing in you agree to our Terms of Service and Privacy Policy. Need help accessing your account? Visit our Help Center or contact support for assistance with login issues, password resets, and account recovery.</p></main><footer><p>Copyright 2026 Example Portal. All rights reserved. Accessibility statement. Terms. Privacy. Contact.</p></footer></body></html>",
+  "true_verdict": "LOGIN_WALL",
+  "note": "A content-RICH login page that embeds reCAPTCHA (visible text well over 600 chars: nav, copy, footer). It is NOT a CAPTCHA gate: the captcha detector must abstain on it (the visible-text gate excludes it). It may legitimately be a LOGIN_WALL via that detector; the point of this fixture is that the CAPTCHA detector does NOT fire."
+}

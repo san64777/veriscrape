@@ -1,0 +1,12 @@
+{
+  "url": "https://portal.example/",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>License Portal</title><base href=\"/\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"styles-EHJL2E6C.css\"></head><body><app-root></app-root><script src=\"main-3C7NMC67.js\" type=\"module\"></script></body></html>",
+  "true_verdict": "EMPTY_SHELL",
+  "note": "A tiny (~360-byte) modern Angular bootstrap: an empty <app-root></app-root> husk + a module script, no server-rendered content. Modeled on real production portals (e.g. license-verification SPAs) that veriscrape missed ONLY because of the old 2KB size floor; the empty-husk app-root detection already handled the structure."
+}

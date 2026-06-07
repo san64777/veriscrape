@@ -1,0 +1,15 @@
+{
+  "url": "https://protected.example/api",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 429,
+  "headers": {
+    "Content-Type": "text/html; charset=UTF-8",
+    "Server": "cloudflare",
+    "cf-ray": "8f3bbb22ccc3-AMS",
+    "Retry-After": "30"
+  },
+  "body": "<!DOCTYPE html><html><head><title>protected.example | 1015: You are being rate limited</title></head><body><div id=\"cf-wrapper\"><div class=\"cf-error-details cf-error-1015\"><h1><span class=\"cf-error-type\">Error</span><span class=\"cf-error-code\">1015</span></h1><h2>You are being rate limited</h2><p>Cloudflare Ray ID: 8f3bbb22ccc3 &mdash; Performance &amp; security by Cloudflare</p></div></div></body></html>",
+  "true_verdict": "UNVERIFIED",
+  "note": "Cloudflare RATE LIMIT (error 1015, HTTP 429). Transient (solvable by backoff/Retry-After), the OPPOSITE of a hard block. Must NOT be BLOCKED. (Future: a RATE_LIMITED verdict.) FP guard from review (HIGH)."
+}

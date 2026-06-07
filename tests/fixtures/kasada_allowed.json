@@ -1,0 +1,13 @@
+{
+  "url": "https://protected.example/api/search?q=widgets",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "x-kpsdk-ct": "06AbCdEfGh1234567890"
+  },
+  "body": "{\"results\":[{\"id\":1,\"name\":\"Blue Widget\",\"price\":49.99},{\"id\":2,\"name\":\"Red Widget\",\"price\":59.99}],\"total\":2}",
+  "true_verdict": "OK",
+  "note": "A cleared Kasada session on an allowed API response (HTTP 200). Carries x-kpsdk-ct (the vendor gate is present) but it is real JSON content at a 2xx status, so it must NOT be flagged. The non-2xx status gate is what separates this from the challenge."
+}

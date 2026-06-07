@@ -1,0 +1,13 @@
+{
+  "url": "https://example-blog.com/what-is-incapsula-incident-id",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Server": "nginx"
+  },
+  "body": "<!DOCTYPE html><html><head><title>Decoding the Incapsula incident ID</title></head><body><article><h1>What is an Incapsula incident ID?</h1><p>When Imperva blocks you, it shows <code>Request unsuccessful. Incapsula incident ID: ...</code> and loads <code>/_Incapsula_Resource</code>. Here is how to read it.</p></article></body></html>",
+  "true_verdict": "OK",
+  "note": "A blog that QUOTES the Incapsula markers in prose but is NOT served by Incapsula: no visid_incap/incap_ses cookie, no X-Iinfo/X-CDN header. The vendor gate must reject it. FP guard."
+}

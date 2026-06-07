@@ -1,0 +1,14 @@
+{
+  "url": "https://api.example/v1/items",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 429,
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Retry-After": "60",
+    "Server": "nginx"
+  },
+  "body": "{\"error\":\"Too Many Requests\",\"retry_after\":60}",
+  "true_verdict": "UNVERIFIED",
+  "note": "A generic application rate-limit 429 from a NON-Kasada API (no x-kpsdk-* header). The vendor gate must reject it: a bare 429 is not a Kasada challenge. (Future: a RATE_LIMITED verdict; for now abstain.) FP guard."
+}

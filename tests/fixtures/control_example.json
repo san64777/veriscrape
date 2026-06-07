@@ -1,0 +1,20 @@
+{
+  "url": "https://example.com",
+  "tool": "curl_cffi:chrome",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "date": "Sun, 07 Jun 2026 14:33:57 GMT",
+    "content-type": "text/html",
+    "server": "cloudflare",
+    "last-modified": "Thu, 04 Jun 2026 22:59:45 GMT",
+    "allow": "GET, HEAD",
+    "age": "701",
+    "cf-cache-status": "HIT",
+    "content-encoding": "br",
+    "cf-ray": "a0805ff90d976d9f-HYD"
+  },
+  "body": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>\n",
+  "true_verdict": "OK",
+  "note": "Live allowed page; contains 'cdn-cgi/challenge-platform' but NO window._cf_chl_opt and NO cf-mitigated header, so the two-key rule must NOT flag it."
+}

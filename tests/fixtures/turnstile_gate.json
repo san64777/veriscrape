@@ -1,0 +1,12 @@
+{
+  "url": "https://protected.example/login",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!doctype html><html><head><title>Just a moment</title><script src=\"https://challenges.cloudflare.com/turnstile/v0/api.js\" async defer></script></head><body><h1>Verify you are human</h1><p>Complete the security check below to access the page.</p><div class=\"cf-turnstile\" data-sitekey=\"0x4AAAAAAABbbbbCCCCdddd\"></div></body></html>",
+  "true_verdict": "CHALLENGE",
+  "note": "A site-embedded Cloudflare Turnstile GATE (NOT Cloudflare's own managed-challenge page, which the cloudflare detector catches first via _cf_chl_opt). KEY1 = the Turnstile api.js + cf-turnstile widget; KEY2 = content-light + gate copy."
+}

@@ -1,0 +1,13 @@
+{
+  "url": "https://protected.example/product/123",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Set-Cookie": "datadome=BByQwAAAAAMA8d4c2Rr7lQ4BcdEfg~; Max-Age=31536000; Domain=.protected.example; Path=/; Secure; SameSite=Lax"
+  },
+  "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Blue Widget — protected.example</title></head><body><main><h1>Blue Widget</h1><p>The Blue Widget is our most popular model, in stock and ready to ship. It features a durable anodized shell, a two-year warranty, and free returns within 30 days.</p><p>Price: $49.99. Over 1,200 verified five-star reviews from customers worldwide.</p></main></body></html>",
+  "true_verdict": "OK",
+  "note": "Allowed DataDome-protected page (HTTP 200). Carries the datadome Set-Cookie (vendor present) but NO captcha-delivery.com and NO 'var dd' object, so the two-key rule must NOT flag it. The cookie alone is on allowed pages too."
+}

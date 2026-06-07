@@ -1,0 +1,14 @@
+{
+  "url": "https://protected.example/license/12345",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "X-CDN": "Incapsula",
+    "Set-Cookie": "visid_incap_1234567=AbCdEf1234567890==; path=/; Domain=.protected.example"
+  },
+  "body": "<!DOCTYPE html><html><head><title>License Lookup</title><script type=\"text/javascript\" src=\"/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3\"></script></head><body><main><h1>License #12345</h1><p>Status: Active. Issued 2021-03-01, expires 2027-03-01. Holder in good standing.</p></main></body></html>",
+  "true_verdict": "OK",
+  "note": "Allowed Incapsula page (HTTP 200) that ALSO carries the client-side SENSOR script <script src=/_Incapsula_Resource?SWJIYLWA=...> that Imperva injects into EVERY protected page for fingerprinting. visid_incap cookie + X-CDN:Incapsula vendor present, '_Incapsula_Resource' substring present, but NO block-only text ('Request unsuccessful' / 'Incapsula incident ID') and NO iframe incident_id= param. The same sensor-on-allowed-pages trap DataDome had: keying on the bare '_Incapsula_Resource' substring WRONGLY flags this CHALLENGE. Must NOT fire. Sources: Imperva sensor docs, capmonster.cloud Incapsula, chromedp #561, scrapingant."
+}

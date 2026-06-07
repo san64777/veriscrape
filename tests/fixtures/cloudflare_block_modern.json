@@ -1,0 +1,14 @@
+{
+  "url": "https://protected.example/listings",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 403,
+  "headers": {
+    "Content-Type": "text/html; charset=UTF-8",
+    "Server": "cloudflare",
+    "cf-ray": "8f3ccc33ddd4-LHR"
+  },
+  "body": "<!DOCTYPE html><html lang=\"en-US\"><head><meta charset=\"UTF-8\"><title>protected.example</title><meta name=\"robots\" content=\"noindex,nofollow\"></head><body><main><h1>Sorry, you have been blocked</h1><h2>You are unable to access protected.example</h2><p>This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution.</p><p>Cloudflare Ray ID: 8f3ccc33ddd4 &mdash; Performance &amp; security by Cloudflare</p></main></body></html>",
+  "true_verdict": "BLOCKED",
+  "note": "MODERN (2023+) Cloudflare WAF block template that drops the 'cf-error-details' class and the 'Attention Required!' title. Stable block-only markers: 'Sorry, you have been blocked' + 'You are unable to access' + 'Performance & security by Cloudflare'. FN guard from review (HIGH): the old rule missed this."
+}

@@ -1,0 +1,14 @@
+{
+  "url": "https://protected.example/product/77",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Server": "AkamaiNetStorage",
+    "Content-Type": "text/html; charset=utf-8",
+    "Set-Cookie": "_abck=A1B2C3D4~0~abcdef...~-1~; Domain=.protected.example; Path=/; Secure, bm_sz=ABCD1234EFGH; Domain=.protected.example; Path=/"
+  },
+  "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Red Gadget — protected.example</title></head><body><main><h1>Red Gadget</h1><p>The Red Gadget ships free and is backed by a two-year warranty. In stock with over 800 verified reviews from buyers worldwide.</p><p>Price: $59.99.</p></main></body></html>",
+  "true_verdict": "OK",
+  "note": "Allowed Akamai-protected page (HTTP 200). Carries Akamai Bot Manager cookies (_abck, bm_sz, set on allowed pages too) but NO 'Access Denied' / 'Reference #' deny markers and is not AkamaiGHost-served. Two-key rule must NOT flag it."
+}

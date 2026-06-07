@@ -1,0 +1,14 @@
+{
+  "url": "https://web.archive.org/web/2026/https://protected.example",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Server": "cloudflare",
+    "cf-ray": "9bbb2222cccc3333-IAD",
+    "Content-Type": "text/html; charset=UTF-8"
+  },
+  "body": "<!DOCTYPE html><html><head><title>Wayback Machine snapshot</title></head><body><div id=\"wm-capture\"><script>(function(){window._cf_chl_opt={cvId:'3',cRay:'oldray'};var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/h/g/orchestrate/chl_page/v1';})();</script></div></body></html>",
+  "true_verdict": "OK",
+  "note": "An archived/proxied 200 snapshot that EMBEDS a real challenge script: it has the window._cf_chl_opt={ assignment AND cdn-cgi/challenge-platform, but the outer response is an allowed 200. Only the non-2xx status gate saves it. FALSE POSITIVE found by adversarial review (fp-specialist, MEDIUM)."
+}

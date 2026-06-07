@@ -1,0 +1,15 @@
+{
+  "url": "https://protected.example/verify",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 403,
+  "headers": {
+    "Content-Type": "text/html; charset=UTF-8",
+    "Cache-Control": "no-cache",
+    "Connection": "close",
+    "Set-Cookie": "TS0123456789=01abcdef...; Path=/"
+  },
+  "body": "<html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: 12345678901234567890<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>",
+  "true_verdict": "BLOCKED",
+  "note": "Faithful F5 BIG-IP ASM (Advanced WAF) block page (HTTP 403). The deny template ('The requested URL was rejected. Please consult with your administrator.' + 'Your support ID is: <id>') is F5-ASM-specific (no other vendor uses it), so it is the marker, gated by a non-2xx status. (BIG-IP cookies like TS<hex>/BIGipServer are the LB, present on allowed pages, not a block signal.) Sources: F5 ASM block-page docs, scrapfly.io anti-bot references."
+}

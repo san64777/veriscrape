@@ -1,0 +1,12 @@
+{
+  "url": "https://protected.example/search",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "body": "<!doctype html><html><head><title>Security Check</title><script src=\"https://www.google.com/recaptcha/api.js\" async defer></script></head><body><div class=\"box\"><h1>Verify you are human</h1><p>Please complete the CAPTCHA below to continue to the site.</p><form action=\"/verify\" method=\"post\"><div class=\"g-recaptcha\" data-sitekey=\"6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe\"></div><button type=\"submit\">Continue</button></form></div></body></html>",
+  "true_verdict": "CHALLENGE",
+  "note": "A reCAPTCHA full-page GATE: sparse (content-light) page whose purpose is the CAPTCHA. KEY1 = the reCAPTCHA api.js + g-recaptcha widget; KEY2 = content-light AND gate copy ('verify you are human' / 'complete the captcha'). Distinct from a login/contact form that merely embeds reCAPTCHA (content-rich, no gate copy)."
+}

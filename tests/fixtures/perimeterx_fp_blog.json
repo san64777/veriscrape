@@ -1,0 +1,13 @@
+{
+  "url": "https://example-blog.com/perimeterx-press-and-hold-explained",
+  "tool": "constructed",
+  "captured_at": "2026-06-07",
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Server": "nginx"
+  },
+  "body": "<!DOCTYPE html><html><head><title>How the PerimeterX Press &amp; Hold challenge works</title></head><body><article><h1>Reading the PerimeterX challenge</h1><p>PerimeterX (HUMAN) shows a <code>Press &amp; Hold</code> button and the text \"Please verify you are a human\". It sets cookies like <code>_px3</code> and loads <code>captcha.px-cdn.net</code>.</p></article></body></html>",
+  "true_verdict": "OK",
+  "note": "A blog that QUOTES the PerimeterX markers in prose but is NOT served by PerimeterX: no _px* cookie, no x-px header. The vendor gate must reject it. FP guard."
+}
