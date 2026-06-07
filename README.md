@@ -9,6 +9,10 @@
 returns the bytes **plus** a portable trust verdict, so you know the moment your data is silently
 wrong, not three days later through a broken downstream report.
 
+```bash
+pip install veriscrape
+```
+
 ```python
 import veriscrape
 
