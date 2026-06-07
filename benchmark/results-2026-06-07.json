@@ -1,0 +1,351 @@
+{
+  "date": "2026-06-07",
+  "tools": [
+    "requests",
+    "curl_cffi",
+    "scrapling"
+  ],
+  "summary": {
+    "requests": {
+      "cells": 9,
+      "silent_failures": 1,
+      "silent_failure_rate": 0.111
+    },
+    "curl_cffi": {
+      "cells": 9,
+      "silent_failures": 2,
+      "silent_failure_rate": 0.222
+    },
+    "scrapling": {
+      "cells": 9,
+      "silent_failures": 3,
+      "silent_failure_rate": 0.333
+    }
+  },
+  "cells": [
+    {
+      "tool": "requests",
+      "tier": "control",
+      "url": "https://example.com",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "requests",
+      "tier": "control",
+      "url": "https://en.wikipedia.org/wiki/Web_scraping",
+      "cause": null,
+      "runs": 3,
+      "status": 403,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "requests",
+      "tier": "empty_shell",
+      "url": "https://discord.com/app",
+      "cause": "js_app_shell",
+      "runs": 3,
+      "status": 200,
+      "verdict": "EMPTY_SHELL",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": true
+    },
+    {
+      "tool": "requests",
+      "tier": "empty_shell",
+      "url": "https://web.telegram.org",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "requests",
+      "tier": "login_wall",
+      "url": "https://news.ycombinator.com/login",
+      "cause": null,
+      "runs": 3,
+      "status": 429,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "requests",
+      "tier": "cloudflare",
+      "url": "https://nowsecure.nl",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "requests",
+      "tier": "datadome",
+      "url": "https://www.g2.com",
+      "cause": "datadome",
+      "runs": 3,
+      "status": 403,
+      "verdict": "CHALLENGE",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "requests",
+      "tier": "datadome",
+      "url": "https://www.etsy.com/listing/00000000/nonexistent-xyz",
+      "cause": "datadome",
+      "runs": 3,
+      "status": 403,
+      "verdict": "CHALLENGE",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "requests",
+      "tier": "hard_404",
+      "url": "https://www.cloudflare.com/this-page-does-not-exist-xyz123",
+      "cause": null,
+      "runs": 3,
+      "status": 404,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "control",
+      "url": "https://example.com",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "control",
+      "url": "https://en.wikipedia.org/wiki/Web_scraping",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "empty_shell",
+      "url": "https://discord.com/app",
+      "cause": "js_app_shell",
+      "runs": 3,
+      "status": 200,
+      "verdict": "EMPTY_SHELL",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": true
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "empty_shell",
+      "url": "https://web.telegram.org",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "login_wall",
+      "url": "https://news.ycombinator.com/login",
+      "cause": "login_wall",
+      "runs": 3,
+      "status": 200,
+      "verdict": "LOGIN_WALL",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": true
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "cloudflare",
+      "url": "https://nowsecure.nl",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "datadome",
+      "url": "https://www.g2.com",
+      "cause": "datadome",
+      "runs": 3,
+      "status": 403,
+      "verdict": "CHALLENGE",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "datadome",
+      "url": "https://www.etsy.com/listing/00000000/nonexistent-xyz",
+      "cause": "datadome",
+      "runs": 3,
+      "status": 403,
+      "verdict": "CHALLENGE",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "curl_cffi",
+      "tier": "hard_404",
+      "url": "https://www.cloudflare.com/this-page-does-not-exist-xyz123",
+      "cause": null,
+      "runs": 3,
+      "status": 404,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "scrapling",
+      "tier": "control",
+      "url": "https://example.com",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "scrapling",
+      "tier": "control",
+      "url": "https://en.wikipedia.org/wiki/Web_scraping",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "scrapling",
+      "tier": "empty_shell",
+      "url": "https://discord.com/app",
+      "cause": "js_app_shell",
+      "runs": 3,
+      "status": 200,
+      "verdict": "EMPTY_SHELL",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": true
+    },
+    {
+      "tool": "scrapling",
+      "tier": "empty_shell",
+      "url": "https://web.telegram.org",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "scrapling",
+      "tier": "login_wall",
+      "url": "https://news.ycombinator.com/login",
+      "cause": "login_wall",
+      "runs": 3,
+      "status": 200,
+      "verdict": "LOGIN_WALL",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": true
+    },
+    {
+      "tool": "scrapling",
+      "tier": "cloudflare",
+      "url": "https://nowsecure.nl",
+      "cause": null,
+      "runs": 3,
+      "status": 200,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "scrapling",
+      "tier": "datadome",
+      "url": "https://www.g2.com",
+      "cause": "login_wall",
+      "runs": 3,
+      "status": 200,
+      "verdict": "LOGIN_WALL",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": true
+    },
+    {
+      "tool": "scrapling",
+      "tier": "datadome",
+      "url": "https://www.etsy.com/listing/00000000/nonexistent-xyz",
+      "cause": null,
+      "runs": 3,
+      "status": 404,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    },
+    {
+      "tool": "scrapling",
+      "tier": "hard_404",
+      "url": "https://www.cloudflare.com/this-page-does-not-exist-xyz123",
+      "cause": null,
+      "runs": 3,
+      "status": 404,
+      "verdict": "UNVERIFIED",
+      "stability": "3/3",
+      "tool_flagged_block": false,
+      "silent_failure": false
+    }
+  ]
+}

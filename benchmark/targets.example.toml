@@ -1,0 +1,39 @@
+# Example benchmark targets: copy to targets.toml and fill in real URLs.
+# One respectful GET per (tool x target). PUBLIC pages only; no auth, no PII.
+# Date every run: anti-bot rots, so an undated result is a lie waiting to happen.
+
+[[targets]]
+tier = "control"        # unprotected baseline, should always be OK
+url  = "https://example.com"
+
+[[targets]]
+tier = "control"
+url  = "https://en.wikipedia.org/wiki/Web_scraping"
+
+[[targets]]
+tier = "cloudflare"     # Cloudflare managed challenge / Turnstile
+url  = ""
+
+[[targets]]
+tier = "datadome"       # DataDome (also covers PerimeterX/HUMAN)
+url  = ""
+
+[[targets]]
+tier = "akamai"         # Akamai Bot Manager
+url  = ""
+
+[[targets]]
+tier = "honeypot"       # the money shot: a 200-OK AI-Labyrinth / decoy page
+url  = ""
+
+[[targets]]
+tier = "soft_404"       # returns 200 for a page that does not exist
+url  = ""
+
+[[targets]]
+tier = "login_wall"     # returns a page, but it's a sign-in gate, not the data
+url  = ""
+
+[[targets]]
+tier = "empty_shell"    # JS app skeleton, near-empty without a browser
+url  = ""

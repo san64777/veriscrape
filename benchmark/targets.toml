@@ -1,0 +1,38 @@
+# veriscrape reliability benchmark targets: PUBLIC pages only, one respectful GET per cell.
+# Date every run. tier is the EXPECTED protection class; the run records what actually happened.
+
+[[targets]]
+tier = "control"
+url  = "https://example.com"
+
+[[targets]]
+tier = "control"
+url  = "https://en.wikipedia.org/wiki/Web_scraping"
+
+[[targets]]
+tier = "empty_shell"
+url  = "https://discord.com/app"
+
+[[targets]]
+tier = "empty_shell"
+url  = "https://web.telegram.org"
+
+[[targets]]
+tier = "login_wall"
+url  = "https://news.ycombinator.com/login"
+
+[[targets]]
+tier = "cloudflare"
+url  = "https://nowsecure.nl"
+
+[[targets]]
+tier = "datadome"
+url  = "https://www.g2.com"
+
+[[targets]]
+tier = "datadome"
+url  = "https://www.etsy.com/listing/00000000/nonexistent-xyz"
+
+[[targets]]
+tier = "hard_404"
+url  = "https://www.cloudflare.com/this-page-does-not-exist-xyz123"
