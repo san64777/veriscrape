@@ -117,3 +117,34 @@ def test_oauth_button_in_content_rich_article_is_not_a_wall():
 def test_content_page_without_auth_is_not_a_wall():
     verdict, *_ = classify_fixture("control_hn.json")
     assert verdict is not Verdict.LOGIN_WALL
+
+
+def test_content_rich_homepage_with_sso_link_and_weak_intent_is_not_a_wall():
+    # The real-world G2 homepage shape (a confirmed false positive): thousands of visible chars of
+    # genuine content, an SSO link, and a weak "log in to view more" affordance. The weak SSO signal
+    # must NOT flag a content-rich page as a login wall; it can only carry a content-light gate where
+    # the gate dominates the page.
+    body = (
+        "<html><head><title>Business Software and Services Reviews | Acme</title></head><body>"
+        '<header><nav>Home Products Pricing <a href="/login">Log in</a></nav></header>'
+        f"<main><h1>Top Business Software</h1><p>{_LONG}</p>"
+        "<p>Log in to view more reviews.</p>"
+        '<a href="https://accounts.google.com/o/oauth2/v2/auth">Log in with Google</a>'
+        "</main></body></html>"
+    )
+    assert _verdict(body) is not Verdict.LOGIN_WALL
+
+
+def test_content_rich_article_with_member_login_sidebar_is_not_a_wall():
+    # A complete, fully-readable article with a member-login sidebar (a password input) and a weak
+    # "sign in to view your saved articles" CTA. The article IS present; the login is a feature, not a
+    # wall. A weak "...to view" CTA must not promote a content-rich page to LOGIN_WALL via the
+    # password branch (the symmetric case of the SSO false positive).
+    body = (
+        "<html><head><title>City Council Approves Budget</title></head><body><main>"
+        f"<article><h1>City Council Approves Budget</h1><p>{_LONG}</p></article>"
+        '<aside><p>Sign in to view your saved articles.</p>'
+        '<form action="/login"><input type="password" name="pw"></form></aside>'
+        "</main></body></html>"
+    )
+    assert _verdict(body) is not Verdict.LOGIN_WALL

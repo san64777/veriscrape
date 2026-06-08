@@ -143,7 +143,11 @@ _HONEYPOT_MIN_TRAP_LINKS = 3
 _LOGIN_INTENT = (
     "sign in to continue", "log in to continue", "sign in to read", "log in to read",
     "sign in to continue reading", "subscribe to continue reading", "subscribe to read",
-    "this content is for subscribers", "you must be logged in", "log in to view", "sign in to view",
+    "this content is for subscribers", "you must be logged in",
+    # Anchored to a content noun: a paywall says "view the full article", a benign feature CTA says
+    # "log in to view your bookmarks / more reviews". The bare "...to view" pair promoted the
+    # content-rich G2 homepage (and a member-login sidebar) to a false LOGIN_WALL.
+    "log in to view the full", "sign in to view the full",
 )
 _SIGNIN_CUE = ("sign in", "log in", "login", "signin")
 # Account-management forms have a password field in main content but are NOT a sign-in gate.
@@ -682,7 +686,13 @@ def _detect_login_wall(
     # KEY 2, a positive sign-in-gate signal in MAIN content.
     if tree.css_first('input[type="password"]') is not None:
         return Verdict.LOGIN_WALL, "login_wall", 0.9, _login_evidence("password form", visible, intent)
-    if _AUTH_VENDOR_URLS.search(main_html) or _AUTH_FORM_ACTION.search(main_html) or _SSO_BUTTON.search(main_low):
+    # The OAuth/SSO signal is WEAK: "sign in with X" links and auth URLs sit in the chrome of
+    # content-rich pages too (a homepage with a login option is not a wall). So it only carries a
+    # verdict on a content-LIGHT page, where the gate genuinely dominates; an intent phrase alone
+    # cannot promote a content-rich page through this path (that was the G2-homepage false positive).
+    if visible < _LOGIN_WALL_MAX_VISIBLE and (
+        _AUTH_VENDOR_URLS.search(main_html) or _AUTH_FORM_ACTION.search(main_html) or _SSO_BUTTON.search(main_low)
+    ):
         return Verdict.LOGIN_WALL, "login_wall", 0.8, _login_evidence("oauth/sso gate", visible, intent)
     return None
 
@@ -742,6 +752,7 @@ _OK_DISQUALIFY_HEADLINE = (
 _OK_GATE_PHRASES = _LOGIN_INTENT + (
     "subscribe to keep reading", "reached your free article", "free article limit",
     "subscribe to unlock", "register to keep reading", "create a free account to read",
+    "free preview", "read your free", "preview of this article",
 )
 
 

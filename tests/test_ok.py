@@ -140,3 +140,18 @@ def test_real_privacy_policy_page_is_still_ok():
     verdict, cause, *_ = classify(status=200, headers={}, body=body)
     assert verdict is Verdict.OK
     assert cause == "content_ok"
+
+
+def test_metered_paywall_free_preview_is_not_ok():
+    # A content-rich teaser behind a metered paywall ("you have read your free preview"). The FULL
+    # article is not present, so OK must not bless the teaser as real content.
+    teaser = "<p>" + ("The mayor outlined a sweeping plan for the waterfront district today. " * 18) + "</p>"
+    body = (
+        "<html><head><title>Waterfront Plan Unveiled</title></head><body><main>"
+        "<h1>Waterfront Plan Unveiled</h1>" + teaser +
+        "<section><p>You have read your free preview of this article. "
+        '<a href="https://accounts.google.com/o/oauth2/v2/auth">Continue with Google</a> to read the rest.</p>'
+        "</section></main></body></html>"
+    )
+    verdict, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is not Verdict.OK
