@@ -725,6 +725,63 @@ def _detect_soft_404(
     return None
 
 
+# Affirmative OK: a 200 needs at least this much server-rendered visible text to be blessed as real
+# content. Below the floor (or missing a document title) it stays UNVERIFIED. Deliberately high: a
+# confident-but-wrong OK is the exact failure veriscrape exists to prevent, so OK abstains when thin.
+_OK_MIN_VISIBLE = 500
+# Length is not proof of content: a padded soft-404, a paywall teaser, or a suspended / error /
+# consent / maintenance page served as 200 is often long, and the negative detectors above are
+# content-light-gated so a bad-AND-long page falls through to here. These disqualifiers keep such
+# pages UNVERIFIED. Headline phrases are matched in title/h1/h2 ONLY, so a real page that mentions
+# them in body prose is unaffected; gate phrases are anchored, never a bare "to continue reading".
+_OK_DISQUALIFY_HEADLINE = (
+    "account suspended", "site is unavailable", "under maintenance", "site maintenance",
+    "something went wrong", "an error occurred", "internal server error", "too many requests",
+    "rate limit", "not available in your", "access denied", "we value your privacy", "your privacy",
+)
+_OK_GATE_PHRASES = _LOGIN_INTENT + (
+    "subscribe to keep reading", "reached your free article", "free article limit",
+    "subscribe to unlock", "register to keep reading", "create a free account to read",
+)
+
+
+def _detect_ok(
+    status: int | None, headers: dict[str, str] | None, body: str | None
+) -> tuple[Verdict, str, float, dict[str, Any]] | None:
+    """Affirmative OK: a 200 that is a real document (has a <title>) with substantial server-rendered
+    visible text. Runs LAST, so every negative verdict wins first. This is the inverse of the
+    empty-shell husk: real content, not a JS skeleton. A short or ambiguous page stays UNVERIFIED.
+    """
+    body = body or ""
+    if status != 200:
+        return None
+    tree = HTMLParser(body)
+    title_node = tree.css_first("title")
+    # A real document carries a <title>; a husk, fragment, or bare error blob usually does not.
+    if title_node is None:
+        return None
+    visible = _visible_text_len(body)
+    if visible < _OK_MIN_VISIBLE:
+        return None
+    # Disqualify a long-but-bad page. Headline (title/h1/h2) markers catch a padded soft-404, parked,
+    # suspended, error, consent, or maintenance page; anchored gate phrases catch a soft paywall or
+    # subscribe wall that the content-light login-wall detector misses.
+    headline_parts = [title_node.text(strip=True)]
+    for tag in ("h1", "h2"):
+        headline_parts.extend(node.text(separator=" ") for node in tree.css(tag))
+    headline = " ".join(headline_parts).lower()
+    if (
+        any(m in headline for m in _NOT_FOUND_MARKERS)
+        or any(m in headline for m in _PARKED_MARKERS)
+        or any(m in headline for m in _OK_DISQUALIFY_HEADLINE)
+    ):
+        return None
+    if any(p in body.lower() for p in _OK_GATE_PHRASES):
+        return None
+    confidence = round(min(0.95, 0.80 + visible / 30000.0), 2)
+    return Verdict.OK, "content_ok", confidence, {"visible_text": visible}
+
+
 # Detectors run in order; the first positive verdict wins. Challenge before block so a
 # challenge page (also 403) is never mislabeled as a hard block. Empty-shell is 2xx-only,
 # so it cannot collide with the (non-2xx) challenge/block detectors.
@@ -743,6 +800,7 @@ _DETECTORS = (
     _detect_login_wall,
     _detect_soft_404,
     _detect_empty_shell,
+    _detect_ok,  # LAST: affirmative OK only after every negative verdict has had its chance
 )
 
 
