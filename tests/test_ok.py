@@ -129,6 +129,36 @@ def test_consent_cookie_wall_is_not_ok():
     assert verdict is not Verdict.OK
 
 
+def test_geo_block_with_reason_in_body_is_not_ok():
+    # A geo-block served as 200: benign headline, the damning reason is in body prose. The body-level
+    # disqualifier must catch it (headline-only matching would bless it).
+    body = (
+        "<html><head><title>Video unavailable</title></head><body><main><h1>Video unavailable</h1>"
+        "<p>" + ("We are sorry, but this video is not available in your country due to rights restrictions. " * 12) + "</p></main></body></html>"
+    )
+    verdict, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is not Verdict.OK
+
+
+def test_maintenance_page_served_as_200_is_not_ok():
+    body = (
+        "<html><head><title>Acme</title></head><body><main><h1>Scheduled maintenance</h1>"
+        "<p>" + ("We will be back soon. The site is temporarily offline for scheduled maintenance. " * 14) + "</p></main></body></html>"
+    )
+    verdict, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is not Verdict.OK
+
+
+def test_age_gate_served_as_200_is_not_ok():
+    body = (
+        "<html><head><title>Welcome</title></head><body><main><h1>Welcome</h1>"
+        "<p>" + ("Are you over 18? You must confirm your age to enter this site and view the content. " * 12) + "</p>"
+        "<button>Yes</button><button>No</button></main></body></html>"
+    )
+    verdict, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is not Verdict.OK
+
+
 def test_real_privacy_policy_page_is_still_ok():
     # A genuine Privacy Policy document is real content, not a consent wall: the "Privacy Policy"
     # headline does not match the consent-wall disqualifier, so it must stay OK (guards not too broad).

@@ -684,7 +684,11 @@ def _detect_login_wall(
         return None
 
     # KEY 2, a positive sign-in-gate signal in MAIN content.
-    if tree.css_first('input[type="password"]') is not None:
+    # A real gate is content-light: the sign-in dominates the page. A password input inside a
+    # content-rich article (a member-login sidebar, a "sign in to continue" reply box on a full
+    # thread) is a feature, not a wall, so a strong intent phrase alone must not promote it. The
+    # _OK_GATE_PHRASES net then abstains such a page to UNVERIFIED rather than guess.
+    if visible < _LOGIN_WALL_MAX_VISIBLE and tree.css_first('input[type="password"]') is not None:
         return Verdict.LOGIN_WALL, "login_wall", 0.9, _login_evidence("password form", visible, intent)
     # The OAuth/SSO signal is WEAK: "sign in with X" links and auth URLs sit in the chrome of
     # content-rich pages too (a homepage with a login option is not a wall). So it only carries a
@@ -754,6 +758,15 @@ _OK_GATE_PHRASES = _LOGIN_INTENT + (
     "subscribe to unlock", "register to keep reading", "create a free account to read",
     "free preview", "read your free", "preview of this article",
 )
+# Block-class phrases that commonly sit in BODY prose (not the headline) on a bad 200: a geo block, a
+# maintenance page, an age gate. Matched against the whole body, deliberately specific so a real page
+# that merely quotes one abstains (UNVERIFIED) rather than being blessed OK.
+_OK_DISQUALIFY_BODY = (
+    "not available in your country", "not available in your region", "not available in your location",
+    "we will be back soon", "we'll be back soon", "back online soon", "temporarily offline",
+    "down for maintenance", "are you over", "confirm your age", "verify your age",
+    "you must be 18", "you must be 21",
+)
 
 
 def _detect_ok(
@@ -787,7 +800,8 @@ def _detect_ok(
         or any(m in headline for m in _OK_DISQUALIFY_HEADLINE)
     ):
         return None
-    if any(p in body.lower() for p in _OK_GATE_PHRASES):
+    low = body.lower()
+    if any(p in low for p in _OK_GATE_PHRASES) or any(p in low for p in _OK_DISQUALIFY_BODY):
         return None
     confidence = round(min(0.95, 0.80 + visible / 30000.0), 2)
     return Verdict.OK, "content_ok", confidence, {"visible_text": visible}

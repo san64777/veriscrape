@@ -36,9 +36,10 @@ def test_login_form_page_is_a_wall():
 
 
 def test_soft_gate_with_intent_phrase_is_a_wall():
+    # A content-LIGHT gate: the page is dominated by the sign-in, with only a short teaser.
     body = (
         "<html><head><title>Members</title></head><body><main>"
-        f"<h2>Sign in to continue</h2><p>{_LONG}</p>"
+        "<h2>Sign in to continue</h2><p>Members get the full archive.</p>"
         '<form action="/login"><input type="password" name="pw"></form></main></body></html>'
     )
     assert _verdict(body) is Verdict.LOGIN_WALL
@@ -146,5 +147,19 @@ def test_content_rich_article_with_member_login_sidebar_is_not_a_wall():
         '<aside><p>Sign in to view your saved articles.</p>'
         '<form action="/login"><input type="password" name="pw"></form></aside>'
         "</main></body></html>"
+    )
+    assert _verdict(body) is not Verdict.LOGIN_WALL
+
+
+def test_content_rich_article_with_strong_intent_and_password_is_not_a_wall():
+    # The asymmetric twin of the SSO false positive: a fully-present article (thousands of visible
+    # chars) that contains a STRONG gate phrase ("sign in to continue") AND a password input in main.
+    # The content is there, so a strong phrase alone must not promote a content-rich page to a wall
+    # via the password branch. A real content-light gate still fires (see test_soft_gate above).
+    body = (
+        "<html><head><title>How paywalls work</title></head><body><main>"
+        f"<h1>How paywalls work</h1><p>{_LONG}</p>"
+        '<form action="/login"><p>Sign in to continue and join the discussion.</p>'
+        '<input type="password" name="pw"></form></main></body></html>'
     )
     assert _verdict(body) is not Verdict.LOGIN_WALL
