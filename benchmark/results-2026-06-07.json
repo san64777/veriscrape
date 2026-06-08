@@ -1,4 +1,5 @@
 {
+  "_correction": "2026-06-08: the scrapling/www.g2.com cell (verdict LOGIN_WALL, silent_failure true) was a veriscrape FALSE POSITIVE. scrapling fetched the real, content-rich G2 homepage (the anti-bot let it through) and veriscrape mislabeled it as a login wall. Discount that cell and the scrapling summary rate (it should be 2 of 9, not 3 of 9). The detector is fixed; that homepage now classifies OK. See results-2026-06-07.md.",
   "date": "2026-06-07",
   "tools": [
     "requests",

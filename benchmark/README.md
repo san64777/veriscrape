@@ -1,51 +1,49 @@
-# benchmark: the neutral reliability finding
+# benchmark: the reliability finding
 
-**The headline (2026-06-07, 9 targets × 3 requests each, every result 3/3 stable):**
+**The robust, independently-labeled finding:**
 
-> Three popular fetchers returned **HTTP 200 "success" where the content was actually junk** (a JS
-> app-shell, a login wall) and reported success. **Scrapling, which markets "blocked request
-> detection," was the *worst* (33%)**: its quiet fetch slipped a `200` past g2.com's DataDome
-> block, but that 200 was a login gate it called success. Status-code-only detection cannot see it.
-> veriscrape flagged every one.
-
-| tool | silent-failure rate (N=3, all 3/3 stable) |
-|---|---|
-| `requests` | 11% |
-| `curl_cffi` | 22% |
-| `scrapling` (markets block detection) | **33%** |
+> `discord.com/app` and `web.telegram.org` return **HTTP 200 with an empty JavaScript app-shell**: no
+> server-rendered content, just a mount point and a wall of scripts. Every status-code-only fetcher
+> (`requests`, `curl_cffi`, `scrapling`) stores that husk as a successful page. The status says
+> success, the bytes are a skeleton, and the corruption is saved as data with no signal anything
+> went wrong.
 
 A **silent failure** is the whole point: a `200 OK` whose body is actually a block / challenge /
-login gate / empty shell / soft-404, returned unflagged and stored as data. See
-[`results-2026-06-07.md`](results-2026-06-07.md) for the full dated table.
+login gate / empty shell / soft-404, returned unflagged and stored as data.
 
-## What it measures
+> **Retraction (2026-06-08).** An earlier cut named `scrapling` "the worst (33%)" on the basis of a
+> g2.com cell. Independent re-labeling of the captured bodies showed that cell was a **veriscrape
+> false positive**: scrapling fetched the real, content-rich G2 homepage (the anti-bot let it
+> through) and veriscrape mislabeled it as a login wall. The detector is fixed (that homepage now
+> classifies `OK`), the claim is retracted, and the scrapling-specific framing is dropped. See the
+> CORRECTION banner in [`results-2026-06-07.md`](results-2026-06-07.md).
 
-For each (tool × target): fetch with the tool, classify the **real** response (status + headers +
-body) with `veriscrape`, and mark a **silent failure** when a 2xx response carries a negative
-verdict the tool did not flag.
+## How it measures (de-circularized)
+
+For each (tool x target): fetch with the tool, **capture the raw body** to `captures/<date>/`
+(local), record what `veriscrape` predicts, and label each body **independently of veriscrape**
+(`labels-<date>.toml`). The silent-failure rate is scored against the independent label
+(`summarize_truth`), and `classify_agreement` reports separately how often veriscrape matched that
+label (its real, non-circular accuracy). This removes the self-grading the first cut relied on.
 
 ## Run it
 
 ```bash
-uv run --extra benchmark python -m benchmark.run            # writes results-<date>.json + .md
-uv run --extra benchmark python -m benchmark.run --date 2026-06-07
+uv run --extra benchmark python -m benchmark.run --date 2026-06-08            # capture + predict
+uv run --extra benchmark python -m benchmark.run --date 2026-06-08 --render   # after hand-labeling
 ```
 
-Edit [`targets.toml`](targets.toml) to change the matrix. Scoring lives in
-[`score.py`](score.py) (unit-tested in `tests/test_benchmark_score.py`).
+Edit [`targets.toml`](targets.toml) to change the matrix. Scoring lives in [`score.py`](score.py)
+(unit-tested in `tests/test_benchmark_score.py`).
 
 ## Honest caveats (read before citing)
 
-- **Tools so far: `requests` + `curl_cffi`** (naive baselines). `scrapling` is wired in (it *claims*
-  block detection, but its mechanism is status-code-only, so it would still miss the 200 husk/gate);
-  `crawl4ai` / `browser-use` / `Firecrawl` are the next rows.
-- **veriscrape is the labeler.** Verdicts were spot-validated against live sites (g2.com → DataDome
-  403; discord → empty shell) but should be hand-verified before any public publication.
-- **N = 3 per cell, all results 3/3 stable** this run (the harness reports the modal verdict +
-  stability). A larger public claim still wants more runs spread across time and IPs. (Honest
-  artifact: `requests` got rate-limited (429) on the HN login after 3 quick hits, itself a
-  non-silent failure, since the status reveals it.)
-- **Dated snapshot.** `nowsecure.nl` was *passing* (allowed) at capture time; anti-bot rots, so re-run before quoting.
+- **Independent labels required.** A published silent-failure or accuracy number is only valid once
+  `labels-<date>.toml` is filled by hand-reading the captured bodies. Until then the truth-scored
+  numbers are empty by design.
+- **Captures are local.** `captures/` is gitignored; the raw bodies are the local evidence behind the
+  labels, not a committed dataset.
+- **Tool / target rework pending.** A clean re-cut wants real article URLs (not `/login`, a weak
+  silent-failure proxy), a live soft-404, and a browser-rendering fetcher, plus more runs across time
+  and IPs. `nowsecure.nl` is an ambiguous turnstile demo; treat it with care.
 - Public targets only; one respectful GET per cell.
-
-See [`../research/benchmark-methodology.md`](../research/benchmark-methodology.md) for the full spec.

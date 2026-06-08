@@ -46,7 +46,11 @@ def aggregate_runs(runs: list[dict]) -> dict:
 
 
 def summarize(cells: list[dict]) -> dict[str, dict]:
-    """Aggregate per tool: total cells, silent failures, and the silent-failure rate."""
+    """SELF-GRADED legacy metric: silent failures judged by veriscrape's OWN verdict, denominator =
+    all cells. This is the circular number the de-circularized harness replaced. NOT the published
+    number: use ``summarize_truth`` (scored against the independent true_verdict) instead. Kept only
+    for its existing unit test.
+    """
     by_tool: dict[str, dict] = {}
     for cell in cells:
         tool = by_tool.setdefault(cell["tool"], {"cells": 0, "silent_failures": 0})

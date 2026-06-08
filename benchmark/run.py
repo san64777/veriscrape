@@ -2,7 +2,7 @@
 
 De-circularized by design. For each (tool x target) we:
   1. fetch with the tool, capturing the RAW response (status, headers, body) to ``captures/<date>/``
-     so the evidence is committed and anyone can re-check it;
+     so the evidence is captured locally for re-checking (captures/ is gitignored, not a committed dataset);
   2. record what veriscrape's classifier PREDICTS (``classify_verdict``), kept separate from
   3. an INDEPENDENT ``true_verdict`` hand label (``labels-<date>.toml``), assigned by reading the
      captured body, NOT by trusting the classifier.
