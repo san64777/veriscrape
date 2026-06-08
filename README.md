@@ -49,8 +49,8 @@ confident wrong `OK`, because a silent false `OK` is the exact failure the tool 
 Today it detects `BLOCKED`, `CHALLENGE`, `HONEYPOT`, `SOFT_404`, `LOGIN_WALL`, and `EMPTY_SHELL` across
 seven anti-bot vendors (Cloudflare, DataDome, Akamai, PerimeterX/HUMAN, Kasada, Imperva, F5 BIG-IP ASM)
 and three CAPTCHA gates (reCAPTCHA, Turnstile, hCaptcha), plus vendor-agnostic content signals. A
-positive `OK` confirmation is still on the roadmap: until it lands, a clean page returns `UNVERIFIED`,
-never a guessed `OK`.
+positive `OK` is emitted for a 200 with substantial server-rendered content, but it stays
+conservative: a thin or ambiguous page abstains to `UNVERIFIED` rather than risk a guessed `OK`.
 
 ## CLI
 

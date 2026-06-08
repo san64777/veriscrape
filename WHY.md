@@ -41,7 +41,7 @@ The verdicts cover eight states: `OK` (genuine origin content), `BLOCKED` (a har
 
 `get()` fetches with `curl_cffi`, then runs the deterministic classifier over the response. The browser-like TLS in `get()` exists only so you are not labeled on a TLS signal alone, before the classifier ever sees the body. The verdict is portable JSON you own (the `FetchRecord`): the same shape travels across `requests`, Scrapy, and Playwright, and trends per-domain over time.
 
-One honest caveat, because a truth-telling tool has to tell the truth about itself. The classifier today never returns `OK`. It either emits a problem verdict or it abstains to `UNVERIFIED`. So today, `r.ok` is effectively always `False`: a clean, real page comes back `UNVERIFIED`, not `OK`. veriscrape is currently a *negative* detector. It tells you when a page is bad, or that it cannot be sure. A positive `OK` confirmation is on the roadmap. That asymmetry is the design: abstain over guess. A confident, wrong `OK` is the exact failure veriscrape exists to prevent, so it would rather say `UNVERIFIED`.
+One design rule worth stating plainly, because a truth-telling tool has to tell the truth about itself: it abstains over guessing. `get()` returns a positive `OK` only for a 200 that is a real document with substantial server-rendered content, the inverse of an empty shell. Anything short, ambiguous, or disqualified (a padded soft-404, a paywall teaser, a suspended or error page served as a 200) comes back `UNVERIFIED`, not `OK`, so `r.ok` is `True` only on that affirmative verdict. `UNVERIFIED` is a real verdict and it is not `ok`. A confident, wrong `OK` is the exact failure veriscrape exists to prevent, so when the evidence is thin it would rather say `UNVERIFIED` than bless the page.
 
 ## The rigor
 
@@ -64,7 +64,7 @@ record = from_response(status, headers, body, url=url)    # httpx, Playwright, a
 
 For Scrapy, add `veriscrape.adapters.VeriscrapeMiddleware` to `DOWNLOADER_MIDDLEWARES` and read `response.meta["veriscrape"]` in the spider. There is a CLI too: `veriscrape check <url>` exits 0 when content looks fine (`OK` or `UNVERIFIED`) and 1 when a problem is detected, so it drops into CI to fail a job that silently scraped a wall. `veriscrape check --file response.html` classifies a saved response with no network.
 
-`pip install veriscrape` (0.1.0, Apache-2.0, Python 3.12+). It is early, the `OK` verdict is not built yet, and I would genuinely like the benchmark torn apart. The whole point is to not lie to you about your data, which starts with not lying about the tool.
+`pip install veriscrape` (0.1.0, Apache-2.0, Python 3.12+). It is early, and I would genuinely like the benchmark and the detectors torn apart. The whole point is to not lie to you about your data, which starts with not lying about the tool.
 
 ---
 
