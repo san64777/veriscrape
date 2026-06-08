@@ -34,6 +34,9 @@ _CF_CHL_ASSIGN = re.compile(r"window\._cf_chl_opt\s*=\s*\{")
 # captcha-delivery.com is the challenge-delivery host, required as a real `src=` resource (not a
 # CSP/preconnect allow-list mention, which ships on allowed pages too).
 _DD_RT = re.compile(r"""['"]rt['"]\s*:\s*['"]([a-z])['"]""", re.I)
+# rt is only a DataDome marker INSIDE `var dd={...}`; a bare 'rt':'b' in an app router/config blob is
+# incidental, so the block branch requires this object (or the captcha-delivery host) to co-occur.
+_DD_OBJECT = re.compile(r"var\s+dd\s*=\s*\{", re.I)
 _DD_CAPTCHA_SRC = re.compile(r"""src\s*=\s*['"]https?://[a-z0-9.-]*captcha-delivery\.com""", re.I)
 # A DataDome mitigation is never a 2xx.
 _DD_MITIGATION_STATUSES = frozenset({401, 403, 429})
@@ -41,6 +44,10 @@ _DD_MITIGATION_STATUSES = frozenset({401, 403, 429})
 # Akamai deny page: the "Reference #<digits>.<hex>.<digits>.<hex>" tracking id, plus Bot Manager cookies.
 _AK_REFERENCE = re.compile(r"Reference\s*#\d+\.[0-9a-f]+\.\d+\.[0-9a-f]+", re.I)
 _AK_COOKIES = ("_abck=", "bm_sz=", "ak_bmsc=", "bm_sv=")
+# The genuine Akamai deny is a short, bare edge template. A content-rich page that merely QUOTES the
+# deny markers in prose (a KB/help article) is not, so require content-light main text: that is the
+# discriminator when both markers legitimately co-occur on a real article.
+_AK_DENY_MAX_VISIBLE = 800
 
 # PerimeterX / HUMAN. The _px* cookie AND sensor JS are on allowed pages, so a challenge needs a
 # non-2xx status AND a challenge-specific marker (NOT generic 'press & hold' UI copy).
@@ -283,12 +290,20 @@ def _detect_datadome(
     low = body.lower()
     rt_match = _DD_RT.search(body)
     rt = rt_match.group(1).lower() if rt_match else None
+    # rt counts as a DataDome marker only inside `var dd={...}`; a bare incidental 'rt' token in app
+    # JS is not a second key. (The captcha-delivery HOST is not enough on its own: DataDome tells
+    # sites to allow-list it in a site-wide CSP, so it ships on allowed pages too.)
+    dd_object = bool(_DD_OBJECT.search(body))
 
-    # Hard block (not solvable): rt:'b', or an explicit block headline.
-    if rt == "b" or "you have been blocked" in low or "access denied" in low:
+    # Hard block (not solvable): the DataDome-specific rt:'b' marker in the dd object, OR an explicit
+    # block headline but only with the proprietary header present. The datadome cookie is re-set on
+    # the origin's OWN 4xx too, so cookie + a generic "access denied", or cookie + a stray 'rt'
+    # token, is ONE key (the same trap the bare-mitigation path below guards), not a DataDome block.
+    if (rt == "b" and dd_object) or (has_header and ("you have been blocked" in low or "access denied" in low)):
         return Verdict.BLOCKED, "datadome_block", 0.95, {"signal": "rt=b/block-headline", "status": status}
-    # Solvable CAPTCHA: the captcha-delivery.com resource loaded via src=, or rt:'c'.
-    if _DD_CAPTCHA_SRC.search(body) or rt == "c":
+    # Solvable CAPTCHA: the captcha-delivery.com resource loaded via a real src=, or rt:'c' inside
+    # the dd object (a bare incidental 'rt':'c', like 'rt':'b', is not a second key).
+    if _DD_CAPTCHA_SRC.search(body) or (rt == "c" and dd_object):
         return Verdict.CHALLENGE, "datadome", 0.97, {"signal": "captcha-delivery.com", "status": status}
     # Bare mitigation (Device Check / JSON deny): require the proprietary x-dd-b/x-datadome header
     # so a site's OWN 403 (cookie-only, ambiguous) is never mislabeled a DataDome block.
@@ -319,11 +334,23 @@ def _detect_akamai_block(
     # a Reference # split across inline tags still matches. Key on the deny-SPECIFIC phrase
     # "permission to access ... on this server": the generic "Access Denied" headline is shared by
     # 5xx edge/origin-error pages and geo/authz refusals, so it is not block-specific.
+    # Strip site chrome and non-content tags, then read MAIN content with an empty separator so a
+    # Reference # split across inline tags re-joins. BOTH deny markers must be in MAIN (a KB article
+    # that wraps the quote in chrome loses them when chrome is stripped) AND main must be content-
+    # light (the deny is a short bare template even when wrapped in a site's chrome; a real article
+    # that quotes the markers in its body is long). Symmetric: chrome can neither inflate nor erase
+    # the discriminator.
     parsed = HTMLParser(body)
-    node = parsed.body or parsed.root
-    # Empty separator so a Reference # split across inline tags re-joins contiguously.
-    text = (node.text(separator="") if node is not None else "") or ""
-    if "permission to access" in text.lower() and _AK_REFERENCE.search(text):
+    for tag in ("header", "nav", "footer", "script", "style", "noscript", "template", "svg"):
+        for chrome in parsed.css(tag):
+            chrome.decompose()
+    main = parsed.body or parsed.root
+    main_text = (main.text(separator="") if main is not None else "") or ""
+    if (
+        "permission to access" in main_text.lower()
+        and _AK_REFERENCE.search(main_text)
+        and len(main_text.strip()) < _AK_DENY_MAX_VISIBLE
+    ):
         return Verdict.BLOCKED, "akamai_block", 0.96, {"marker": "permission-to-access + Reference #", "status": status}
     return None
 

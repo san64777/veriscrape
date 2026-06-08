@@ -87,3 +87,63 @@ def test_akamai_block_with_encoded_or_split_markup_is_detected():
     verdict, cause, *_ = classify(status=403, headers={"server": "AkamaiGHost"}, body=body)
     assert verdict is Verdict.BLOCKED
     assert cause == "akamai_block"
+
+
+def test_akamai_fronted_article_quoting_the_permission_phrase_is_not_blocked():
+    # An Akamai-fronted, content-RICH KB article (404) that QUOTES the deny template verbatim:
+    # "permission to access ... on this server" AND a real-format Reference #, in prose. Both
+    # markers co-occur and both vendor keys are real, so the two-key rule alone does not save it;
+    # the discriminator is that this is a long article, not the short bare deny template.
+    filler_why = (
+        "Automated clients without a warmed session, missing sensor cookies, or datacenter IP "
+        "ranges are common triggers for this response. "
+    )
+    filler_fix = (
+        "Retry through an approved egress, make sure the _abck and bm_sz cookies are present, and "
+        "contact the site owner to request an allow-list for your integration. "
+    )
+    body = (
+        '<article><h1>Fixing Akamai "Access Denied" (Reference #) errors on your API calls</h1>'
+        "<p>Customers occasionally report that a request returns a page reading: "
+        "<em>You don't have permission to access \"/v2/orders\" on this server.</em> followed by "
+        "<code>Reference #18.1a2b3c4d.1718000000.0badc0de</code>. That is Akamai Bot Manager "
+        "challenging the request, not your code.</p>"
+        "<h2>Why this happens</h2><p>" + filler_why * 10 + "</p>"
+        "<h2>How to resolve it</h2><p>" + filler_fix * 10 + "</p></article>"
+    )
+    verdict, *_ = classify(status=404, headers={"server": "AkamaiGHost", "set-cookie": "bm_sv=EEEE~"}, body=body)
+    assert verdict is not Verdict.BLOCKED
+
+
+def test_akamai_deny_wrapped_in_site_chrome_is_blocked():
+    # A GENUINE Akamai deny served through the origin's custom error template with full site chrome
+    # (nav + footer), so whole-page text exceeds the content-light threshold but the MAIN deny is
+    # still short. Must stay BLOCKED: the content-light gate measures MAIN content, not chrome.
+    nav = "<header><nav>" + "Home Products Pricing Docs Support Blog Careers Contact " * 15 + "</nav></header>"
+    footer = "<footer>" + "Terms Privacy Cookies Legal Sitemap Status Help " * 15 + "</footer>"
+    deny = (
+        "<h1>Access Denied</h1>"
+        "<p>You don't have permission to access \"/data\" on this server.</p>"
+        "<p>Reference #18.dd5d2c17.1718000000.1a2b3c4d</p>"
+    )
+    body = "<html><body>" + nav + deny + footer + "</body></html>"
+    verdict, cause, *_ = classify(status=403, headers={"server": "AkamaiGHost"}, body=body)
+    assert verdict is Verdict.BLOCKED
+    assert cause == "akamai_block"
+
+
+def test_akamai_fronted_article_with_content_in_chrome_tags_is_not_blocked():
+    # A content-rich Akamai-fronted help page whose article text sits inside a semantic chrome tag
+    # (<header>/<footer> are common wrappers). Stripping chrome must not collapse the page into a
+    # "short deny": the markers, quoted in that prose, are not the page's MAIN deny content, so it
+    # must not be flagged BLOCKED. Guards the inverse of the chrome-wrapped-deny case.
+    para = (
+        "If a request returns a page reading you don't have permission to access \"/x\" on this "
+        "server with a Reference #18.dd5d2c17.1718000000.1a2b3c4d, it was challenged by Akamai. "
+    )
+    body = (
+        '<html><body><header role="banner"><h1>Akamai error help</h1>'
+        "<p>" + para * 12 + "</p></header></body></html>"
+    )
+    verdict, *_ = classify(status=404, headers={"server": "AkamaiGHost", "set-cookie": "bm_sv=EEEE~"}, body=body)
+    assert verdict is not Verdict.BLOCKED
