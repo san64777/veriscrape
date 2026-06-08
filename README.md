@@ -67,14 +67,20 @@ problem is detected. Drop it into CI to fail a job that silently scraped a wall.
 
 ## The finding
 
-We ran popular fetchers against protected sites and used veriscrape to classify what they *actually*
-got back ([`benchmark/`](benchmark/), dated 2026-06-07, 9 targets × 3 requests, every result stable):
+We ran popular fetchers against a set of targets, captured the raw bodies, and labeled each one
+independently of veriscrape ([`benchmark/`](benchmark/)):
 
-> `requests` / `curl_cffi` / `scrapling` returned **HTTP 200 "success" where the content was actually
-> junk** (a JS app-shell, a login wall). **Scrapling, which markets "blocked request detection," was
-> the worst (33%)**: its browser-impersonating fetch returned a `200` on a DataDome-protected page, but that 200
-> was a login gate it reported as success. Status-code-only detection cannot see it. veriscrape
-> flagged every one.
+> `discord.com/app` and `web.telegram.org` return **HTTP 200 with an empty JavaScript app-shell**: no
+> server-rendered content, just a mount point and a wall of scripts. Every status-code-only fetcher
+> (`requests`, `curl_cffi`, `scrapling`) stores that husk as a successful page. The status says
+> success, the bytes are a skeleton, and the corruption is saved as data with no signal anything
+> went wrong.
+
+> A note on rigor: an earlier cut of this benchmark reported a higher, scrapling-specific rate.
+> Independent re-labeling of the captured bodies showed one headline cell was a *veriscrape* false
+> positive (a real homepage mislabeled as a login wall), so that framing is retracted and the
+> detector is fixed. Catching that is the point: the tool is built to flag silently-wrong data,
+> and that discipline has to apply to its own output first.
 
 Reproduce: `uv run --extra benchmark python -m benchmark.run`.
 

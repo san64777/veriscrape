@@ -4,19 +4,11 @@ A bare HTTP 200 is an untyped result. The status line says success, but it tells
 
 So I ran a small experiment. Take three popular Python fetchers (`requests`, `curl_cffi`, and `scrapling`), point them at nine targets (a mix of controls and anti-bot-protected sites), three requests each, and then inspect what each one *actually* got back. Not the status code. The bytes.
 
-Here is the silent-failure rate. I define a "silent failure" as a 2xx "success" whose body is junk (a login wall, a JavaScript app-shell, a not-found page served as 200) that the fetcher reports as success with no signal anything is wrong.
+A "silent failure" is a 2xx "success" whose body is junk (a JavaScript app-shell with no content, a login wall, a not-found page served as 200) that the fetcher reports as success with no signal anything is wrong. The cleanest, least-disputable case: `discord.com/app` and `web.telegram.org` both return HTTP 200 with an **empty JavaScript app-shell**, a mount point and a wall of scripts, zero server-rendered content. Every status-code-only fetcher (`requests`, `curl_cffi`, `scrapling`) stores that husk as a successful page. The status says success, the bytes are a skeleton, and the corruption is saved as data.
 
-| Fetcher    | Silent failures | Rate |
-|------------|-----------------|------|
-| requests   | 1 of 9          | 11%  |
-| curl_cffi  | 2 of 9          | 22%  |
-| scrapling  | 3 of 9          | 33%  |
+This is a category-wide, structural blind spot, not a knock on any one tool: status-code retry logic is blind to content-level failure by construction, so any fetcher built on it inherits the gap.
 
-Every result was stable: 3 of 3 identical runs. The benchmark is dated (`benchmark/results-2026-06-07.md`) and reproducible: `uv run --extra benchmark python -m benchmark.run`.
-
-The sharpest data point. `scrapling` markets blocked-request detection, and in this run it had the highest silent-failure rate. On `g2.com` (DataDome-protected), its browser-impersonating fetch returned HTTP 200, but that 200 was a login gate, reported as success. Status-code-only logic cannot see this. veriscrape classified it `LOGIN_WALL` (cause `login_wall`), stable 3 of 3.
-
-I want to be precise about what that means: this is a category-wide blind spot, structural, not a knock on one tool. Status-code retry logic is blind to content-level failure by construction, so any fetcher built on it inherits the gap. `discord.com/app` returned 200 but was an `EMPTY_SHELL` (a JS app skeleton) for all three fetchers. `news.ycombinator.com/login` returned 200 and was a `LOGIN_WALL` silently for `curl_cffi` and `scrapling` too. I include the `scrapling` line because it is the most concrete illustration, with full reproduction, not to dunk on a competitor.
+A note on how I know, because it matters more than any single number. I captured the raw body of every fetch and labeled each one independently of veriscrape, then compared. That process caught a mistake in an earlier draft of this writeup: a cell I had reported as a competitor's "silent failure" on `g2.com` was actually a *veriscrape* false positive. The real G2 homepage had come back (the anti-bot let the fetch through), and veriscrape had mislabeled the content-rich homepage as a login wall. I fixed the detector (the real homepage now classifies as `OK`) and retracted the claim. That is the whole thesis turned on its author: the tool exists to flag silently-wrong data, and the discipline has to apply to its own output first. A confident, wrong verdict is the exact failure veriscrape exists to prevent, so when it cannot stand behind one it abstains (`UNVERIFIED`) rather than guess.
 
 ## Why this happens
 
