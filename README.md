@@ -79,7 +79,7 @@ got back ([`benchmark/`](benchmark/), dated 2026-06-07, 9 targets × 3 requests,
 Reproduce: `uv run --extra benchmark python -m benchmark.run`.
 
 For the longer story (why a 200 stopped being ground truth, and the design rules behind the verdicts),
-see [why veriscrape exists](WHY.md).
+see [why veriscrape exists](WHY.md) or the [dev.to write-up](https://dev.to/san64777/your-scraper-says-200-ok-i-measured-how-often-its-lying-3d0h).
 
 ## Use it with your existing stack
 
