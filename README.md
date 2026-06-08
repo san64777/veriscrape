@@ -46,9 +46,11 @@ verdict, with the evidence and a confidence score.
 
 Detection is **two-key and conservative**: it would rather abstain (`UNVERIFIED`) than emit a
 confident wrong `OK`, because a silent false `OK` is the exact failure the tool exists to prevent.
-Today it detects `BLOCKED`, `CHALLENGE`, `SOFT_404`, `LOGIN_WALL`, and `EMPTY_SHELL` across Cloudflare,
-DataDome, Akamai, and vendor-agnostic signals. (`HONEYPOT` and a positive `OK` confirmation are on the
-roadmap.)
+Today it detects `BLOCKED`, `CHALLENGE`, `HONEYPOT`, `SOFT_404`, `LOGIN_WALL`, and `EMPTY_SHELL` across
+seven anti-bot vendors (Cloudflare, DataDome, Akamai, PerimeterX/HUMAN, Kasada, Imperva, F5 BIG-IP ASM)
+and three CAPTCHA gates (reCAPTCHA, Turnstile, hCaptcha), plus vendor-agnostic content signals. A
+positive `OK` confirmation is still on the roadmap: until it lands, a clean page returns `UNVERIFIED`,
+never a guessed `OK`.
 
 ## CLI
 
@@ -70,11 +72,14 @@ got back ([`benchmark/`](benchmark/), dated 2026-06-07, 9 targets × 3 requests,
 
 > `requests` / `curl_cffi` / `scrapling` returned **HTTP 200 "success" where the content was actually
 > junk** (a JS app-shell, a login wall). **Scrapling, which markets "blocked request detection," was
-> the worst (33%)**: its browser-impersonating fetch got a `200` past a DataDome block, but that 200
+> the worst (33%)**: its browser-impersonating fetch returned a `200` on a DataDome-protected page, but that 200
 > was a login gate it reported as success. Status-code-only detection cannot see it. veriscrape
 > flagged every one.
 
 Reproduce: `uv run --extra benchmark python -m benchmark.run`.
+
+For the longer story (why a 200 stopped being ground truth, and the design rules behind the verdicts),
+see [why veriscrape exists](WHY.md).
 
 ## Use it with your existing stack
 
@@ -103,6 +108,6 @@ cookies / body, dated and reproducible, never a black box.
 Pre-alpha · deterministic-first · Apache-2.0 · drop-in for `requests.get`.
 
 ```console
-$ uv sync          # from a clone (not yet on PyPI)
-$ uv run pytest    # 70 tests
+$ uv sync          # for local development from a clone
+$ uv run pytest    # 125 tests
 ```
