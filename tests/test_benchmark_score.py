@@ -1,6 +1,12 @@
 """Tests for the benchmark's silent-failure scoring."""
 
-from benchmark.score import aggregate_runs, is_silent_failure, summarize
+from benchmark.score import (
+    aggregate_runs,
+    classify_agreement,
+    is_silent_failure,
+    summarize,
+    summarize_truth,
+)
 
 
 def test_2xx_with_negative_verdict_unflagged_is_silent_failure():
@@ -55,3 +61,33 @@ def test_summarize_computes_per_tool_rates():
     assert s["curl_cffi"]["silent_failure_rate"] == 0.5
     assert s["requests"]["silent_failure_rate"] == 1.0
     assert s["curl_cffi"]["silent_failures"] == 1
+
+
+# --- de-circularized scoring: judge against an INDEPENDENT true_verdict, and measure how often
+# veriscrape's own verdict agreed with it (its real, non-circular accuracy). ---
+
+def test_classify_agreement_measures_veriscrape_against_independent_labels():
+    cells = [
+        {"classify_verdict": "LOGIN_WALL", "true_verdict": "LOGIN_WALL"},
+        {"classify_verdict": "UNVERIFIED", "true_verdict": "OK"},  # abstained where the truth is OK
+        {"classify_verdict": "EMPTY_SHELL", "true_verdict": "EMPTY_SHELL"},
+        {"classify_verdict": None, "true_verdict": None},  # unlabeled, excluded from the denominator
+    ]
+    a = classify_agreement(cells)
+    assert a["labeled"] == 3
+    assert a["agree"] == 2
+    assert a["rate"] == round(2 / 3, 3)
+
+
+def test_summarize_truth_scores_silent_failure_by_independent_label_over_2xx_eligible():
+    # Silent failure is judged by the TRUE verdict (not veriscrape's), and the denominator is only
+    # the 2xx-eligible cells: a non-2xx response already signalled a problem and cannot be silent.
+    cells = [
+        {"tool": "curl_cffi", "status": 200, "true_verdict": "LOGIN_WALL", "tool_flagged_block": False},
+        {"tool": "curl_cffi", "status": 200, "true_verdict": "OK", "tool_flagged_block": False},
+        {"tool": "curl_cffi", "status": 403, "true_verdict": "CHALLENGE", "tool_flagged_block": False},
+    ]
+    s = summarize_truth(cells)
+    assert s["curl_cffi"]["eligible"] == 2
+    assert s["curl_cffi"]["silent_failures"] == 1
+    assert s["curl_cffi"]["rate"] == 0.5

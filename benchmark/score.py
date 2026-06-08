@@ -58,3 +58,40 @@ def summarize(cells: list[dict]) -> dict[str, dict]:
             round(tool["silent_failures"] / tool["cells"], 3) if tool["cells"] else 0.0
         )
     return by_tool
+
+
+def classify_agreement(cells: list[dict]) -> dict:
+    """How often veriscrape's own verdict matched the INDEPENDENT true_verdict.
+
+    This is the de-circularizing number: the headline silent-failure rate is judged against the
+    hand label (``summarize_truth``), and this reports separately how accurate veriscrape was against
+    that same independent ground truth. Cells without a true_verdict are excluded.
+    """
+    labeled = [c for c in cells if c.get("true_verdict")]
+    agree = sum(1 for c in labeled if c.get("classify_verdict") == c["true_verdict"])
+    n = len(labeled)
+    return {"labeled": n, "agree": agree, "rate": round(agree / n, 3) if n else 0.0}
+
+
+def summarize_truth(cells: list[dict]) -> dict[str, dict]:
+    """Per-tool silent-failure scored against the INDEPENDENT true_verdict, not veriscrape's verdict.
+
+    The denominator is only the 2xx-eligible cells: a non-2xx response already signalled a problem,
+    so it cannot be a silent failure and does not belong in the rate. Cells without a true_verdict
+    are skipped (unlabeled).
+    """
+    by_tool: dict[str, dict] = {}
+    for cell in cells:
+        true_verdict = cell.get("true_verdict")
+        if not true_verdict:
+            continue
+        tool = by_tool.setdefault(cell["tool"], {"eligible": 0, "silent_failures": 0})
+        status = cell.get("status")
+        if status is None or not (200 <= status < 300):
+            continue  # non-2xx is not eligible to be a silent failure
+        tool["eligible"] += 1
+        if is_silent_failure(status, true_verdict, cell.get("tool_flagged_block", False)):
+            tool["silent_failures"] += 1
+    for tool in by_tool.values():
+        tool["rate"] = round(tool["silent_failures"] / tool["eligible"], 3) if tool["eligible"] else 0.0
+    return by_tool
