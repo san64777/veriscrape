@@ -115,5 +115,5 @@ Pre-alpha · deterministic-first · Apache-2.0 · drop-in for `requests.get`.
 
 ```console
 $ uv sync          # for local development from a clone
-$ uv run pytest    # 152 tests
+$ uv run pytest    # 157 tests
 ```
