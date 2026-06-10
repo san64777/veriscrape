@@ -803,7 +803,7 @@ _PAYWALL_GATE_MAIN = (
     # and the server-default / maintenance stubs are never real articles.
     "to keep reading", "to continue reading", "continue reading with",
     "read the full article", "read the full story", "read the full report",
-    "read the full review", "read the full recipe", "read the full profile",
+    "read the full review", "read the full profile",
     "read the full verdict", "read the full briefing", "read the full piece",
     "read the rest of this", "read the rest of the story",
     "unlock the full", "unlock full", "unlock this story", "unlock the rest",

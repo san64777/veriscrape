@@ -237,9 +237,13 @@ def test_read_the_full_member_gate_variant_is_not_ok():
     assert verdict is Verdict.UNVERIFIED
 
 
-def test_real_article_with_subscribe_cta_in_footer_stays_ok():
-    # The false-negative guard: gate phrases are MAIN-scoped, so a genuine full article whose FOOTER
-    # carries a "subscribe to our newsletter / become a member" CTA must still be blessed OK.
+def test_real_article_with_generic_newsletter_cta_stays_ok():
+    # A genuine full article with a GENERIC newsletter / community CTA stays OK: "subscribe to our
+    # newsletter" / "become a member of our community" are not the paywall-specific gate phrases
+    # ("subscribe to keep reading", "this content is for subscribers", "become a member to read"), so
+    # they do not disqualify. NOTE (honest scope): a footer that literally says "subscribe to keep
+    # reading" IS read as a paywall tell and abstains to UNVERIFIED - abstain-over-guess is the safe
+    # bias on a phrasing that genuinely signals gated content.
     para = "<p>" + ("This is a substantial paragraph of genuine reporting that a reader could honestly cite. " * 4) + "</p>"
     body = (
         "<html><head><title>A real long article</title></head><body>"
