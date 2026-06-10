@@ -185,3 +185,68 @@ def test_metered_paywall_free_preview_is_not_ok():
     )
     verdict, *_ = classify(status=200, headers={}, body=body)
     assert verdict is not Verdict.OK
+
+
+# --- MAIN-content structural gate: a long-but-contentless 200 (chrome-padded husk, link farm, gate
+# teaser in a non-listed language) must not be blessed OK, while a real article with a subscribe CTA
+# in its FOOTER chrome stays OK (the gate check is MAIN-scoped, never whole-body).
+
+def test_thin_main_content_padded_by_chrome_is_not_ok():
+    nav = "<nav>" + (' <a href="/x">Section link to somewhere</a>' * 40) + "</nav>"
+    footer = "<footer>" + ("About us. Contact. Privacy policy. Terms of service. Careers. " * 20) + "</footer>"
+    body = (
+        "<html><head><title>A site page</title></head><body>" + nav +
+        "<main><article><h1>Hello</h1><p>Two short sentences. This is not really an article.</p>"
+        "</article></main>" + footer + "</body></html>"
+    )
+    verdict, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is Verdict.UNVERIFIED
+
+
+def test_link_farm_doorway_is_not_ok():
+    links = "".join(
+        f'<p><a href="/p{i}">cheap affordable best deals guide number {i} for all your needs today</a></p>'
+        for i in range(40)
+    )
+    body = f"<html><head><title>Top resources and guides</title></head><body><main>{links}</main></body></html>"
+    verdict, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is Verdict.UNVERIFIED
+
+
+def test_multilingual_subscribe_wall_is_not_ok():
+    teaser = "<p>" + ("Los analistas describieron un patron inusual en las cuentas trimestrales. " * 10) + "</p>"
+    body = (
+        "<html><head><title>El reportaje</title></head><body><main><article>"
+        "<h1>Lo que mostraron los datos</h1>" + teaser +
+        "<p>Este articulo es exclusivo para suscriptores. Suscribete para seguir leyendo.</p>"
+        "</article></main></body></html>"
+    )
+    verdict, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is Verdict.UNVERIFIED
+
+
+def test_read_the_full_member_gate_variant_is_not_ok():
+    teaser = "<p>" + ("The committee's recommendations touch on funding, oversight, and timelines. " * 10) + "</p>"
+    body = (
+        "<html><head><title>The full briefing</title></head><body><main><article>"
+        "<h1>What the committee proposed</h1>" + teaser +
+        "<p>This is a members-only briefing. Become a member to read the full 24-page report.</p>"
+        "</article></main></body></html>"
+    )
+    verdict, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is Verdict.UNVERIFIED
+
+
+def test_real_article_with_subscribe_cta_in_footer_stays_ok():
+    # The false-negative guard: gate phrases are MAIN-scoped, so a genuine full article whose FOOTER
+    # carries a "subscribe to our newsletter / become a member" CTA must still be blessed OK.
+    para = "<p>" + ("This is a substantial paragraph of genuine reporting that a reader could honestly cite. " * 4) + "</p>"
+    body = (
+        "<html><head><title>A real long article</title></head><body>"
+        "<main><article><h1>A real heading</h1>" + para * 4 + "</article></main>"
+        "<footer><p>Subscribe to our weekly newsletter for updates. Become a member of our community today.</p></footer>"
+        "</body></html>"
+    )
+    verdict, cause, *_ = classify(status=200, headers={}, body=body)
+    assert verdict is Verdict.OK
+    assert cause == "content_ok"
