@@ -1,6 +1,6 @@
 [project]
 name = "veriscrape"
-version = "0.1.0"
+version = "0.2.0"
 description = "fetch, but it tells you the truth: a verified-fetch primitive that returns a portable trust verdict, not just bytes."
 readme = "README.md"
 requires-python = ">=3.12"

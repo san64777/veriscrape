@@ -179,6 +179,11 @@ _NOT_FOUND_MARKERS = (
     "the requested url was not found", "404 not found", "error 404",
     "we couldn't find that page", "couldn't find the page", "that page doesn't exist",
     "this page isn't available", "page not available",
+    # Soft-404 / removed / expired / stub variants. Headline-anchored (title/h1/h2), so a real article
+    # that merely mentions one in body prose is unaffected.
+    "no longer available", "no longer exists", "has been removed", "has been deleted",
+    "has been retired", "content has expired", "article has expired", "page has moved",
+    "content unavailable", "content is unavailable", "has been taken down", "coming soon",
 )
 _PARKED_MARKERS = (
     "this domain is for sale", "buy this domain", "domain is for sale",
@@ -767,6 +772,81 @@ _OK_DISQUALIFY_BODY = (
     "down for maintenance", "are you over", "confirm your age", "verify your age",
     "you must be 18", "you must be 21",
 )
+# A real, citable article has substantial MAIN content (the article body, not the site chrome). A gate
+# husk, soft-404, link farm, or boilerplate-only page has little once header/nav/footer/aside are
+# removed, even when its TOTAL visible length clears _OK_MIN_VISIBLE (chrome + a teaser inflate the
+# total). This MAIN-content floor is the structural backstop for the long-but-contentless 200s the
+# phrase lists miss. Set well below a genuine short article's body so it abstains junk, not real pages.
+_OK_MIN_MAIN = 600
+# A 200 whose MAIN content is mostly link text (a link farm / SEO doorway / nav-only page) is not an
+# article, however long.
+_OK_MAX_LINK_DENSITY = 0.55
+# Subscription / paywall gate phrases, matched in MAIN content ONLY (chrome stripped) so a real
+# article's footer "subscribe to our newsletter" or a sidebar CTA never fires. A full real article's
+# BODY does not tell the reader to subscribe/register to keep reading - that instruction exists only on
+# a gated page, so these are safe to disqualify to UNVERIFIED.
+_PAYWALL_GATE_MAIN = (
+    "subscribe to continue", "subscribe to read", "subscribe to keep reading",
+    "subscribe for unlimited", "subscribe to unlock", "subscribe now to read",
+    "this article is for subscribers", "this content is for subscribers", "for subscribers only",
+    "become a member to read", "become a member to continue", "become a subscriber to",
+    "create a free account to read", "create a free account to continue",
+    "register to continue reading", "register to keep reading", "register to read this",
+    "unlock this article", "unlock the full article", "unlock unlimited access",
+    "free article limit", "free articles remaining", "reached your free article",
+    "articles remaining this month", "your free articles",
+    "sign in to continue reading", "log in to continue reading",
+    "log in to read the full", "sign in to read the full",
+    # Variant gate CTAs that sit in a truncated teaser's tail. Main-scoped, so a real article's body
+    # does not contain them: "read the full X" / "members-only" / "unlock the full" / "to keep reading"
+    # are paywall tells, "disable your ad blocker to view the full" gates content behind an ad wall,
+    # and the server-default / maintenance stubs are never real articles.
+    "to keep reading", "to continue reading", "continue reading with",
+    "read the full article", "read the full story", "read the full report",
+    "read the full review", "read the full profile",
+    "read the full verdict", "read the full briefing", "read the full piece",
+    "read the rest of this", "read the rest of the story",
+    "unlock the full", "unlock full", "unlock this story", "unlock the rest",
+    "become a member", "members-only", "members only", "members get", "members read the",
+    "for paid subscribers", "paid subscriber",
+    "institutional login", "sign in via institution", "institutional access",
+    "you've used your free", "you have used your free", "used your free",
+    "to view the full recipe", "disable your ad blocker", "recipe card loading",
+    "default web page", "it works!", "apache/2", "welcome to nginx",
+    "site is currently unavailable", "currently unavailable due to",
+    # "already a member?/subscriber?" and "upgrade to read" appear only on a gate, never in a real
+    # article body. Plus MULTILINGUAL subscribe/member walls - real paywalls are not English-only, and
+    # a subscribe imperative ("suscríbete", "abonnez-vous", "jetzt abonnieren") is a gate in any tongue.
+    "already a member", "already a subscriber", "already a paid subscriber",
+    "upgrade to read", "upgrade to pro", "upgrade to continue reading",
+    "suscríbete", "suscribete", "para suscriptores", "exclusivo para suscriptores",
+    "abónate", "hazte socio", "abonnez-vous", "réservé aux abonnés", "reserve aux abonnes",
+    "jetzt abonnieren", "nur für abonnenten", "für abonnenten", "weiterlesen mit",
+    "para assinantes", "assine para", "abbonati per", "contenuto riservato",
+)
+# Placeholder / auto-filler markers: lorem ipsum and template stubs are never real content.
+_LOREM_MARKERS = (
+    "lorem ipsum", "dolor sit amet", "sample content goes here", "your text here", "placeholder text",
+)
+
+
+def _ok_main_metrics(body: str) -> tuple[int, float, str]:
+    """MAIN-content substance (site chrome and link text removed), link-density, and lowercased main
+    text - used by _detect_ok to reject long-but-contentless 200s (gate husks, link farms, teasers,
+    boilerplate) that clear the raw visible-length floor on site chrome alone.
+    """
+    tree = HTMLParser(body)
+    for tag in ("header", "nav", "footer", "aside", "form", "script", "style", "noscript", "template", "svg"):
+        for node in tree.css(tag):
+            node.decompose()
+    main = tree.css_first("main") or tree.css_first("article") or tree.body
+    if main is None:
+        return 0, 1.0, ""
+    text = main.text(separator=" ", strip=True) or ""
+    link_text = "".join(a.text(strip=True) or "" for a in main.css("a"))
+    substance = max(0, len(text) - len(link_text))
+    density = (len(link_text) / len(text)) if text else 1.0
+    return substance, density, text.lower()
 
 
 def _detect_ok(
@@ -803,8 +883,19 @@ def _detect_ok(
     low = body.lower()
     if any(p in low for p in _OK_GATE_PHRASES) or any(p in low for p in _OK_DISQUALIFY_BODY):
         return None
+    # STRUCTURAL gate: a real article has substantial MAIN content, not just chrome and links. This
+    # rejects the long-but-contentless 200s (gate husks, soft-404s, link farms, boilerplate, empty
+    # teasers, consent/region walls) that pad their visible length with site chrome and slip the phrase
+    # nets. The main-scoped paywall + lorem checks then catch a gated teaser or filler that has bulk.
+    main_substance, link_density, main_low = _ok_main_metrics(body)
+    if main_substance < _OK_MIN_MAIN:
+        return None
+    if link_density > _OK_MAX_LINK_DENSITY:
+        return None
+    if any(p in main_low for p in _PAYWALL_GATE_MAIN) or any(m in main_low for m in _LOREM_MARKERS):
+        return None
     confidence = round(min(0.95, 0.80 + visible / 30000.0), 2)
-    return Verdict.OK, "content_ok", confidence, {"visible_text": visible}
+    return Verdict.OK, "content_ok", confidence, {"visible_text": visible, "main_substance": main_substance}
 
 
 # Detectors run in order; the first positive verdict wins. Challenge before block so a
